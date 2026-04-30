@@ -34,16 +34,25 @@ def load_data():
     return X, y
 
 def train_logistic_regression(X_train, y_train):
-    
     #base line, simple model for binary classification: create, fit, return model
     logistic_reg_model = LogisticRegression(max_iter=500)#set max iterations to 500 to ensure convergence
     logistic_reg_model.fit(X_train,y_train)
 
     return logistic_reg_model
 
+
+#random forest model: handles messy real-world data well (no normalization/scaling necessary)
+#it also handles class imbalance better than simpler models
 def train_random_forest(X_train, y_train):
-    #create, fit, return model
-    pass
+    #more complex model: create, fit, return model
+    #build 200 trees, take majority vote, make result reproducible with random_state = 42 (every run same model)
+    rand_forest_model.fit(X_train, y_train)
+    rand_forest_model = RandomForestClassifier(n_estimators=200, random_state=42) 
+
+    return rand_forest_model
+
+
+#add another model later? (depending on evaluation)
 
 def evaluate_model(model, X_test, y_test, name):
     #predict, print F1/precision/recall, return scores dict
