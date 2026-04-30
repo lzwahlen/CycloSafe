@@ -1,6 +1,7 @@
 import geopandas as gpd
 
 
+
 #Load Delft cyclist data and road segments
 cyclists = gpd.read_file("data/bron_delft_cyclists.geojson")
 road_segments = gpd.read_file("data/osm_road_segments.geojson")
