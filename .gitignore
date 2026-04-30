@@ -1,0 +1,19 @@
+# Documents
+*.docx
+*.doc
+
+# Data files
+data/
+models/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pkl
+.ipynb_checkpoints/
+
+# Environment
+.env
+
+# macOS
+.DS_Store
