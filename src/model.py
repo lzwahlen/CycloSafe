@@ -34,19 +34,23 @@ def load_data():
     return X, y
 
 def train_logistic_regression(X_train, y_train):
-    # create, fit, return model
-    pass
+    
+    #base line, simple model for binary classification: create, fit, return model
+    logistic_reg_model = LogisticRegression(max_iter=500)#set max iterations to 500 to ensure convergence
+    logistic_reg_model.fit(X_train,y_train)
+
+    return logistic_reg_model
 
 def train_random_forest(X_train, y_train):
-    # create, fit, return model
+    #create, fit, return model
     pass
 
 def evaluate_model(model, X_test, y_test, name):
-    # predict, print F1/precision/recall, return scores dict
+    #predict, print F1/precision/recall, return scores dict
     pass
 
 def plot_feature_importance(model, feature_names):
-    # bar chart of feature importances, save to models/
+    #bar chart of feature importances, save to models/
     pass
 
 #temporary to test model functions
