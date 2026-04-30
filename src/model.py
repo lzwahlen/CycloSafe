@@ -46,6 +46,7 @@ def train_logistic_regression(X_train, y_train):
 def train_random_forest(X_train, y_train):
     #more complex model: create, fit, return model
     #build 200 trees, take majority vote, make result reproducible with random_state = 42 (every run same model)
+    #!maybe change parameters later
     rand_forest_model.fit(X_train, y_train)
     rand_forest_model = RandomForestClassifier(n_estimators=200, random_state=42) 
 
@@ -56,14 +57,27 @@ def train_random_forest(X_train, y_train):
 
 def evaluate_model(model, X_test, y_test, name):
     #predict, print F1/precision/recall, return scores dict
-    pass
+
+    y_pred = model.predict(X_test)
+
+    #use f1 score to balance recall and precision(find most dangerous segments, while not having too many false alarms)
+    f1 = f1_score(y_test, y_pred) # = 2/((1/precision) + (1/recall))
+    #precision = how many of predicted high risk row_seg were actually high risk
+    precision = precision_score(y_test, y_pred) # 1 - false positive rate
+    recall = recall_score(y_test, y_pred) #true positive rate
+
+    #additional evaluation methods necessary? e.g. accuracy = (tp + tn)/(p + n)
+
+    return {"name": name, "f1": f1, "precision": precision, "recall": recall}
+
 
 def plot_feature_importance(model, feature_names):
-    #bar chart of feature importances, save to models/
+    #bar chart of feature importances, save to models
     pass
 
 #temporary to test model functions
-if __name__ == "__main__":
-    temp = load_data()
+#if __name__ == "__main__":
+#    temp = load_data()
+
 
 
