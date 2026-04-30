@@ -1,5 +1,8 @@
 import geopandas as gpd
 
+#creation of road_segments.csv  
+#joining accidents to roads 
+#creating a high_risk label for the top 25% roads with the most accidents
 
 #load Delft cyclist data and road segments
 cyclists = gpd.read_file("data/bron_delft_cyclists.geojson")
