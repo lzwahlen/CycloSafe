@@ -11,7 +11,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratif
 
 
 #train logistic regression
-lr = train_logistic_regression(X_train, y_train)git 
+lr = train_logistic_regression(X_train, y_train)
 
 #train random forest
 rf = train_random_forest(X_train, y_train)

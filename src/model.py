@@ -13,6 +13,9 @@ def load_data():
 
     #maxspeed and lanes might have missing values
     
+    #strip list wrapper (e.g. from ['50'] to 50) before calling to numeric (otherwise wouldn't recognise numbers and turn everything to NaN)
+    road_segments["maxspeed"] = road_segments["maxspeed"].str.extract(r'(\d+)')[0]
+    road_segments["lanes"] = road_segments["maxspeed"].str.extract(r'(\d+)')[0]
     #force to NaN if conversion to numerical is not possible
     road_segments["maxspeed"] = pd.to_numeric(road_segments["maxspeed"], errors="coerce") 
     road_segments["lanes"] = pd.to_numeric(road_segments["lanes"], errors="coerce")
@@ -47,8 +50,8 @@ def train_random_forest(X_train, y_train):
     #more complex model: create, fit, return model
     #build 200 trees, take majority vote, make result reproducible with random_state = 42 (every run same model)
     #!maybe change parameters later
-    rand_forest_model.fit(X_train, y_train)
     rand_forest_model = RandomForestClassifier(n_estimators=200, random_state=42) 
+    rand_forest_model.fit(X_train, y_train)
 
     return rand_forest_model
 
