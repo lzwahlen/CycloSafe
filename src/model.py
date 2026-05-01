@@ -8,7 +8,7 @@ from sklearn.metrics import f1_score, precision_score, recall_score
 
 def load_data():
     #load csv, fill missing values, one-hot encode, return X and y
-    road_segments = pd.read_csv("data/road_segments.csv")
+    road_segments = pd.read_csv("../data/road_segments.csv")
     #print(road_segments.shape)
 
     #maxspeed and lanes might have missing values
