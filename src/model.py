@@ -66,13 +66,17 @@ def evaluate_model(model, X_test, y_test, name):
     precision = precision_score(y_test, y_pred) # 1 - false positive rate
     recall = recall_score(y_test, y_pred) #true positive rate
 
-    #additional evaluation methods necessary? e.g. accuracy = (tp + tn)/(p + n)
+    #additional evaluation methods useful? e.g. accuracy = (tp + tn)/(p + n)
 
     return {"name": name, "f1": f1, "precision": precision, "recall": recall}
 
 
 def plot_feature_importance(model, feature_names):
     #bar chart of feature importances, save to models
+    
+    #feature importance score from every featrue from trained Random Forest
+    #how to plot/handle logistic regression? (no importances assigned)
+
     pass
 
 #temporary to test model functions
