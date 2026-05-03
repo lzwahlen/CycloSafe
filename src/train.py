@@ -5,20 +5,27 @@ from sklearn.model_selection import train_test_split
 #load data
 X,y = load_data()
 
-#print how many rows belong to each class:
-print(y.value_counts())
-print(y.value_counts(normalize=True))
-
 #80/20 train/validation split
 #use 80% of segments for training, 20% for testing
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
+#print how many rows belong to each class:
+#print(y.value_counts())
+#print(y.value_counts(normalize=True))
+#problem: only 198 high-risk segments out of 116625 
+#sol: undersample majority class (take 5000 randomly sampled negatives and all positives)
+pos_idx = y_train[y_train == 1].index
+neg_idx = y_train[y_train == 0].sample(n=5000, random_state=42).index
+bal_idx = pos_idx.append(neg_idx).to_series().sample(frac=1, random_state=42).index
+
+X_train_bal = X_train.loc[bal_idx]
+y_train_bal = y_train.loc[bal_idx]
 
 #train logistic regression
-lr = train_logistic_regression(X_train, y_train)
+lr = train_logistic_regression(X_train_bal, y_train_bal)
 
 #train random forest
-rf = train_random_forest(X_train, y_train)
+rf = train_random_forest(X_train_bal, y_train_bal)
 
 #eval models
 lr_evals = evaluate_model(lr, X_test, y_test, "Logistic Regression")
