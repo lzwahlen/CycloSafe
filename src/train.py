@@ -17,7 +17,8 @@ lr = train_logistic_regression(X_train, y_train)
 rf = train_random_forest(X_train, y_train)
 
 #eval models
-evaluate_model(lr, X_train, y_train, "Logistic Regression")
-evaluate_model(lr, X_train, y_train, "Random Forest")
+lr_evals = evaluate_model(lr, X_train, y_train, "Logistic Regression")
+fr_evals = evaluate_model(lr, X_train, y_train, "Random Forest")
 
+#print evaluation, plot it? is fr actually better than lr? 
 

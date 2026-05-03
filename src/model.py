@@ -73,6 +73,12 @@ def evaluate_model(model, X_test, y_test, name):
 
     return {"name": name, "f1": f1, "precision": precision, "recall": recall}
 
+def evaluate_probabilities(model, X_test,name):
+
+    #predicted class probabilities of model, (for a map of gradients)
+    prob = model.predict_proba(X_test)
+    return {"name": name, "probabilites": prob}
+
 
 def plot_feature_importance(model, feature_names):
     #bar chart of feature importances, save to models
