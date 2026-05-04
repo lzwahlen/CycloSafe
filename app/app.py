@@ -59,6 +59,10 @@ def load_road_network():
     return paths
 
 pred = load_predictions()
+
+#round predicted risk score
+pred["predicted_risk_score"] = pred["predicted_risk_score"].round(3)
+
 road_paths = load_road_network()
 
 
@@ -101,7 +105,7 @@ layer_accidents = pdk.Layer(
     "ScatterplotLayer",
     data=pred[pred["accident_count"] > 0],
     get_position=["lon", "lat"],
-    get_fill_color=[255, 255, 0, 230],  # yellow
+    get_fill_color=[255, 255, 0, 230],  #yellow
     get_radius=25,                       #larger so they sit visibly on top
     pickable=True
 )
@@ -114,8 +118,8 @@ view_state = pdk.ViewState(
     pitch=0             #flat top-down view
 )
 
-#tooltip when hover over dot
-tooltip = {
+#tooltip when hover over dot for the predictions
+tooltip_pred = {
     "html": """
         <b>Risk score:</b> {predicted_risk_score}<br>
         <b>Accidents:</b> {accident_count}<br>
@@ -124,20 +128,58 @@ tooltip = {
     "style": {"backgroundColor": "white", "color": "black", "fontSize": "13px"}
 }
 
-#render map, stack layers
+
+#tooltip for the actual accidents
+tooltip_accidents = {
+    "html": """
+        <b>Accidents recorded:</b> {accident_count}<br>
+        <b>Predicted risk score:</b> {predicted_risk_score}<br>
+    """,
+    "style": {"backgroundColor": "white", "color": "black", "fontSize": "13px"}
+}
+
+#add sidebar toggle
+view_mode = st.radio(
+    "Map display mode",
+    options=["Predicted risk score", "Actual accident locations"],
+    horizontal=True  #displays options side by side instead of stacked
+)
+
+
+#layers based on selection
+if view_mode == "Predicted risk score":
+    layers = [layer_roads, layer]
+    tooltip = tooltip_pred
+    st.markdown("""
+    **Risk level colour guide**
+    - Red: high predicted risk (score > 0.6)
+    - Orange: medium predicted risk (score 0.3–0.6)
+    - Grey: low predicted risk (score < 0.3)
+    """)
+else:
+    layers = [layer_roads, layer_accidents]
+    tooltip = tooltip_accidents
+    st.markdown("""
+    **Accident locations**
+    - Yellow: road segment with at least one recorded accident
+    """)
+
+
+#render map
 st.pydeck_chart(
     pdk.Deck(
-        layers=[layer_roads, layer, layer_accidents],
+        layers=layers,
         initial_view_state=view_state,
         tooltip=tooltip,
-        map_style="mapbox://styles/mapbox/light-v9"  #clean light basemap
+        map_style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+        #map_style="mapbox://styles/mapbox/light-v9"  #clean light basemap
     )
 )
 
-st.markdown("""
-**Risk level colour guide**
-- Red — high predicted risk (score > 0.6)
-- Orange — medium predicted risk (score 0.3–0.6)
-- Grey — low predicted risk (score < 0.3)
-- Yellow — road segment with at least one recorded accident
-""")
+#st.markdown("""
+#**Risk level colour guide**
+#- Red — high predicted risk (score > 0.6)
+#- Orange — medium predicted risk (score 0.3–0.6)
+#- Grey — low predicted risk (score < 0.3)
+#- Yellow — road segment with at least one recorded accident
+#""")
