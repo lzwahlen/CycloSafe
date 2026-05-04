@@ -18,7 +18,8 @@ The dashboard is fully interactive, allowing users to filter road segments by ty
 
 ## Key findings
 
-*to do: add general findings and thoughts*
+*to do: add general findings and thoughts, add screenshot of model insight of dashboard*
+
 
 ### Temp (!) notes on plots
 ### feature importance plot
