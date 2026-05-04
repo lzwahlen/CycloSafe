@@ -5,8 +5,8 @@ import geopandas as gpd
 #creating a high_risk label for the top 25% roads with the most accidents
 
 #load Delft cyclist data and road segments
-cyclists = gpd.read_file("data/bron_delft_cyclists.geojson")
-road_segments = gpd.read_file("data/osm_road_segments.geojson")
+cyclists = gpd.read_file("../data/bron_delft_cyclists.geojson")
+road_segments = gpd.read_file("../data/osm_road_segments.geojson")
 
 #reproject both to EPSG:28992 (meter representation) 
 #to buffer the roads by 20m to also get accident points very close to the road
@@ -42,8 +42,15 @@ road_segments["high_risk"] = (road_segments["accident_count"] > threshold).astyp
 #reproject back for the final output for consistency
 road_segments = road_segments.to_crs("EPSG:4326")
 output = road_segments[["geometry", "highway", "maxspeed", "lanes", "junction", "accident_count", "high_risk"]].copy()
-output["lat"] = output.geometry.centroid.y
-output["lon"] = output.geometry.centroid.x
+
+
+#compute centroid in projected CRS for accuracy, then extract lat/lon in 4326
+centroids = output.to_crs(epsg=28992).geometry.centroid.to_crs(epsg=4326)
+output["lat"] = centroids.y
+output["lon"] = centroids.x
+
+#to verify lat/lon
+#print(output[["lat", "lon"]].describe())
 
 #save output to csv file for training
-output.to_csv("data/road_segments.csv", index=True)
+output.to_csv("../data/road_segments.csv", index=False)
