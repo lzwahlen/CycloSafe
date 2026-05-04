@@ -11,18 +11,19 @@ I developed an end-to-end ML pipeline to analyse the risk of bike accidents in D
 The dashboard is fully interactive, allowing users to filter road segments by type and explore high-risk areas based on a minimum risk score and accident count.
 
 ![CycloSafe Dashboard Interface](app/assets/cyclosafe_dashboard.png)
-*Figure 1: The dynamic CycloSafe dashboard, designed to help users explore and filter predicted collision risks on the streets of Delft*
+*Figure 1: The dynamic CycloSafe dashboard is designed to help users explore and filter predicted collision risks on the streets of Delft.*
 
 ![CycloSafe Map of Actual Accidents](app/assets/cyclosafe_dashboard_accidents.png)
-*Figure 2: The CycloSafe Actual Accidents Map shows the collision locations across the road network. Hovering over a specific data point reveals more information on the risk score and the amount of accidents that occured*
+*Figure 2: The CycloSafe Actual Accidents Map shows the collision locations across the road network. Hovering over a specific data point reveals more information on the risk score and the amount of accidents that occured.*
 
 ## Key findings
 
-## Results
+*to do: add general findings and thoughts*
 
-## Temp notes on plots
- 
+### Temp (!) notes on plots
 ### feature importance plot
+
+![Feature Importance - Top 15 feature importances](plots/feature_importance.png)
 
 Findings:
 - highway_cycleway at 0.075: very counterintuitive, I would have expected cycling infrastructure to reduce risk, not predict it, but maybe this is because they have more cyclists and therefore more accidents, this comes from the data limitation introduced by BRON as BRON records accidents but not cyclist volume, so high-use infrastructure looks risky even when it is well designed
@@ -36,6 +37,8 @@ It explains why F1 is 0.027. In a dataset where features strongly separate class
 
 
 ### shap plot
+
+![SHAP Summary: Feature Impact on High-Risk Prediction](plots/shap_summary.png)
 
 Even though model prediction is not that good and F1 score is very low, I still used the SHAP plot. SHAP does not evaluate whether the model is accurate, but it explains what the model learned from the data it had. 
 
@@ -53,6 +56,10 @@ Findings:
 - highway_tertiary has strongest positve val (0.15), signals strongest risk push, maybe because moderate speed with cars and bikes mixed -> dangerous
 - highway_service has widest overall spread -> affects more segments than any other feature, but per-segment influence is weak
 - violet dots in maxspeed: segments have medium speed limit, neither highest nor lowest in dataset -> present but maybe unreliable 
+
+## Results
+
+ *to do: add and discuss results*
 
 ## Tech Stack 
 I built this project using a Python-based geospatial and ML stack:

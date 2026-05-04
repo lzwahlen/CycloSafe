@@ -308,7 +308,7 @@ with tab1:
         """)
     else:
         st.markdown("""
-        **Accident locations**
+        **Accident locations colour guide**
         - Blue: road segment with at least one recorded accident
         """)
 
