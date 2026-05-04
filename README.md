@@ -17,7 +17,17 @@ streamlit run app/app.py
 
 ## Temp notes on plots
  
-### feature importance plot 
+### feature importance plot
+
+Findings:
+- highway_cycleway at 0.075: very counterintuitive, I would have expected cycling infrastructure to reduce risk, not predict it, but maybe this is because they have more cyclists and therefore more accidents, this comes from the data limitation introduced by BRON as BRON records accidents but not cyclist volume, so high-use infrastructure looks risky even when it is well designed
+- highway_service at 0.267: service roads (access roads, parking aisles, driveways, and back-of-building roads) are most predictive features, surprising that on service roads most cyclist accidents happen, maybe because service roads are very common in osm network or because they are tight spaces with no cycling infrastructure
+- maxspeed at 0.160: speed limit second strongest signal, makes sense since higher speed creates more severe accidents
+- lanes at 0.090: more lanes generally means busier, wider roads, shap plot showed that in some cases wider lanes push toward lower risk which could be the case because wider roads in Delft might have better cycling infrastructure or clearer lane separation
+
+In total, the plot shows that the model learned something real from the data, even if it is not strong enough to classify reliably. 
+
+It explains why F1 is 0.027. In a dataset where features strongly separate classes the top feature should be at 0.5 or higher. Even the best feature only explains about a quarter of the model's decisions which means no single feature is a reliable predictor on its own.
 
 
 ### shap plot

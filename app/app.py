@@ -176,6 +176,10 @@ st.pydeck_chart(
     )
 )
 
+
+#add sidebar filter for risk score?
+#add shap chart? 
+
 #st.markdown("""
 #**Risk level colour guide**
 #- Red — high predicted risk (score > 0.6)
