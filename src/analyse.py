@@ -54,3 +54,9 @@ predictions = pd.DataFrame({ "lat": road_segments_full["lat"].values, "lon": roa
     "predicted_high_risk": all_preds, "high_risk_actual": y.values, "accident_count": road_segments_full["accident_count"].values})
 
 predictions.to_csv("../data/predictions.csv", index=False)
+
+#sanity check
+#print(predictions.shape)
+#print(predictions.head())
+#print(f"Risk score range: {all_probs.min():.3f} to {all_probs.max():.3f}")
+#print(f"Predicted high risk: {all_preds.sum()}")
