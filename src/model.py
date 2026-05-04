@@ -61,8 +61,10 @@ def load_data():
 def train_logistic_regression(X_train, y_train):
     #base line, simple model for binary classification: create, fit, return model
     #added class_weight = balanced to penalize missing minority class more heavily (without it would predict every road segement as low risk (always high_risk = 0, never 1))
-    logistic_reg_model = LogisticRegression(max_iter=5000, class_weight= 'balanced')#set max iterations to 500 to ensure convergence
+    logistic_reg_model = LogisticRegression(max_iter=2000, class_weight= 'balanced')#set max iterations to 500 to ensure convergence
     logistic_reg_model.fit(X_train,y_train)
+
+    joblib.dump(logistic_reg_model, "../models/logistic_regression.pkl")
 
     return logistic_reg_model
 
@@ -76,6 +78,8 @@ def train_random_forest(X_train, y_train):
     #added class_weight = balanced to penalize missing minority class more heavily (without it would predict every road segement as low risk (always high_risk = 0, never 1))
     rand_forest_model = RandomForestClassifier(n_estimators=200, random_state=42, class_weight= 'balanced') 
     rand_forest_model.fit(X_train, y_train)
+
+    joblib.dump(rand_forest_model, "../models/random_forest.pkl")
 
     return rand_forest_model
 

@@ -6,9 +6,9 @@ from sklearn.model_selection import train_test_split
 X,y = load_data()
 
 #sanity check
-print(f"Positives: {y.sum()}, Total: {len(y)}, Rate: {y.mean():.4f}")
-print(X.describe())
-print(f"\nFeature columns: {X.columns.tolist()}")
+#print(f"Positives: {y.sum()}, Total: {len(y)}, Rate: {y.mean():.4f}")
+#print(X.describe())
+#print(f"\nFeature columns: {X.columns.tolist()}")
 
 
 #80/20 train/validation split
