@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 import shap
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 #load models from disk (s.t. no retraining needed)
 lr = joblib.load("../models/logistic_regression.pkl")
@@ -39,3 +40,17 @@ plt.tight_layout()
 plt.savefig("../plots/shap_summary.png", dpi=150, bbox_inches="tight")
 plt.close()
 
+road_segments_full = pd.read_csv("../data/road_segments.csv")
+
+#add spatial cross-validation? 
+#(for more honest f1 score by testing on unseen geographic areas of Delft instead of random segments)
+
+#save predictions
+#get risk scores for all segments, not just test set (what the dashboard map will use)
+all_probs = rf.predict_proba(X)[:, 1]  # continuous risk score 0-1
+all_preds = (all_probs >= 0.5).astype(int)
+
+predictions = pd.DataFrame({ "lat": road_segments_full["lat"].values, "lon": road_segments_full["lon"].values, "predicted_risk_score": all_probs,
+    "predicted_high_risk": all_preds, "high_risk_actual": y.values, "accident_count": road_segments_full["accident_count"].values})
+
+predictions.to_csv("../data/predictions.csv", index=False)
