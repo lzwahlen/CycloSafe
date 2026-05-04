@@ -96,10 +96,10 @@ def plot_feature_importance(model, feature_names):
     plt.xticks(range(15), [feature_names[i] for i in indices], rotation=45, ha='right')
     plt.title("Random Forest — Top 15 Feature Importances")
     plt.tight_layout()
-    plt.savefig("../models/feature_importance.png", dpi=150)
+    plt.savefig("../plots/feature_importance.png", dpi=150)
     plt.close() 
 
-    
+
     pass
 
 #temporary to test model functions
