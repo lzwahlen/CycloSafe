@@ -1,20 +1,5 @@
 # CycloSafe
 
-## Setup:
-
-use the following commands to create the conda environment: 
-
-```bash
-conda env create -f environment.yml
-conda activate cyclosafe
-```
-
-run app with 
-
-```bash
-streamlit run app/app.py      
-```
-
 ## Temp notes on plots
  
 ### feature importance plot
@@ -50,6 +35,45 @@ Findings:
 - violet dots in maxspeed: segments have medium speed limit, neither highest nor lowest in dataset -> present but maybe unreliable 
 
 
-## Other
 
-Cyclosafe bike logo drawn by me
+## Setup:
+Prerequisites:
+- Ensure you have Conda or Mamba installed
+- Ensure you have an active internet connection (to fetch OSM data)
+
+Clone the repository: 
+```bash
+git clone https://github.com/lzwahlen/CycloSafe.git
+cd CycloSafe
+```
+
+Create and activate the conda environment:
+```bash
+conda env create -f environment.yml
+conda activate cyclosafe
+```
+
+Run the pipeline and train the model:
+```bash
+cd src
+python pipeline.py
+python train.py
+python analyse.py
+```
+
+Run the dashboard:
+```bash
+cd ..
+streamlit run app/app.py      
+```
+
+
+## Notes
+
+- Logo: CycloSafe bike logo drawn by me
+- Accident data: Sourced from the BRON database via data.overheid.nl
+    - Dataset version: The specific dataset used is the ongevallen_2022_2024 GeoJSON dataset.
+- Road network: Sourced from OpenStreetMap (www.openstreetmap.org)
+    - Implementation: The road network data was pulled using the osmnx Python library for the regions Delft, Rijswijk, Pijnacker-Nootdorp, Midden-Delfland, Den Haag, and Westland.  
+
+
