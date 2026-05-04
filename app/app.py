@@ -201,108 +201,137 @@ if selected_road_types:
 st.sidebar.markdown(f"Showing **{len(pred_filtered):,}** of **{len(pred):,}** segments")
 
 
-#pydeck layer (scatterplotLayer places one dot per row at [lon, lat])
-layer = pdk.Layer(
-    "ScatterplotLayer",
-    data=pred_filtered,  #filtered instead of full pred
-    get_position=["lon", "lat"],
-    get_fill_color="colour",        #column name for colour
-    get_radius=15,
-    pickable=True
-)
 
-#path layer for the roads
-layer_roads = pdk.Layer(
-    "PathLayer",
-    data=road_paths,
-    get_path="path",
-    get_color=[180, 180, 180, 80],  #light grey, semi-transparent
-    get_width=10,                     #line width in metres
-    pickable=False
-)
+tab1, tab2 = st.tabs(["Risk Map", "Model Insights"])
 
-#layer to highlight only segments where accidents actually happened
-layer_accidents = pdk.Layer(
-    "ScatterplotLayer",
-    data=pred_filtered[pred_filtered["accident_count"] > 0],
-    get_position=["lon", "lat"],
-    get_fill_color=[30, 144, 255, 180],  #blue
-    get_radius=25,                       #larger so they sit visibly on top
-    pickable=True
-)
-
-#set initial map view
-view_state = pdk.ViewState(
-    latitude=52.012,    #Delft centre coordinates
-    longitude=4.357,
-    zoom=13,            #city-level zoom (show all of Delft, zoom = 15 is street level)
-    pitch=0             #flat top-down view
-)
-
-#tooltip when hover over dot for the predictions
-tooltip_pred = {
-    "html": """
-        <b>Risk score:</b> {predicted_risk_score}<br>
-        <b>Accidents:</b> {accident_count}<br>
-        <b>Actual high risk:</b> {high_risk_actual}
-    """,
-    "style": {"backgroundColor": "white", "color": "black", "fontSize": "13px"}
-}
-
-
-#tooltip for the actual accidents
-tooltip_accidents = {
-    "html": """
-        <b>Accidents recorded:</b> {accident_count}<br>
-        <b>Predicted risk score:</b> {predicted_risk_score}<br>
-    """,
-    "style": {"backgroundColor": "white", "color": "black", "fontSize": "13px"}
-}
-
-#add sidebar toggle
-view_mode = st.radio(
-    "Map display mode",
-    options=["Predicted risk score", "Actual accident locations"],
-    horizontal=True  #displays options side by side instead of stacked
-)
-
-
-#layers based on selection
-if view_mode == "Predicted risk score":
-    layers = [layer_roads, layer]
-    tooltip = tooltip_pred
-
-else:
-    layers = [layer_roads, layer_accidents]
-    tooltip = tooltip_accidents
-
-
-#render map
-st.pydeck_chart(
-    pdk.Deck(
-        layers=layers,
-        initial_view_state=view_state,
-        tooltip=tooltip,
-        map_style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
-        #map_style="mapbox://styles/mapbox/light-v9"  #clean light basemap
+with tab1:
+    #pydeck layer (scatterplotLayer places one dot per row at [lon, lat])
+    layer = pdk.Layer(
+        "ScatterplotLayer",
+        data=pred_filtered,  #filtered instead of full pred
+        get_position=["lon", "lat"],
+        get_fill_color="colour",        #column name for colour
+        get_radius=15,
+        pickable=True
     )
-)
 
-#color guide based on selection
-if view_mode == "Predicted risk score":
+    #path layer for the roads
+    layer_roads = pdk.Layer(
+        "PathLayer",
+        data=road_paths,
+        get_path="path",
+        get_color=[180, 180, 180, 80],  #light grey, semi-transparent
+        get_width=10,                     #line width in metres
+        pickable=False
+    )
+
+    #layer to highlight only segments where accidents actually happened
+    layer_accidents = pdk.Layer(
+        "ScatterplotLayer",
+        data=pred_filtered[pred_filtered["accident_count"] > 0],
+        get_position=["lon", "lat"],
+        get_fill_color=[30, 144, 255, 180],  #blue
+        get_radius=25,                       #larger so they sit visibly on top
+        pickable=True
+    )
+
+    #set initial map view
+    view_state = pdk.ViewState(
+        latitude=52.012,    #Delft centre coordinates
+        longitude=4.357,
+        zoom=13,            #city-level zoom (show all of Delft, zoom = 15 is street level)
+        pitch=0             #flat top-down view
+    )
+
+    #tooltip when hover over dot for the predictions
+    tooltip_pred = {
+        "html": """
+            <b>Risk score:</b> {predicted_risk_score}<br>
+            <b>Accidents:</b> {accident_count}<br>
+            <b>Actual high risk:</b> {high_risk_actual}
+        """,
+        "style": {"backgroundColor": "white", "color": "black", "fontSize": "13px"}
+    }
+
+
+    #tooltip for the actual accidents
+    tooltip_accidents = {
+        "html": """
+            <b>Accidents recorded:</b> {accident_count}<br>
+            <b>Predicted risk score:</b> {predicted_risk_score}<br>
+        """,
+        "style": {"backgroundColor": "white", "color": "black", "fontSize": "13px"}
+    }
+
+    #add sidebar toggle
+    view_mode = st.radio(
+        "Map display mode",
+        options=["Predicted risk score", "Actual accident locations"],
+        horizontal=True  #displays options side by side instead of stacked
+    )
+
+
+    #layers based on selection
+    if view_mode == "Predicted risk score":
+        layers = [layer_roads, layer]
+        tooltip = tooltip_pred
+
+    else:
+        layers = [layer_roads, layer_accidents]
+        tooltip = tooltip_accidents
+
+
+    #render map
+    st.pydeck_chart(
+        pdk.Deck(
+            layers=layers,
+            initial_view_state=view_state,
+            tooltip=tooltip,
+            map_style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+            #map_style="mapbox://styles/mapbox/light-v9"  #clean light basemap
+        )
+    )
+
+    #color guide based on selection
+    if view_mode == "Predicted risk score":
+        st.markdown("""
+        **Risk level colour guide**
+        - Red: high predicted risk (score > 0.6)
+        - Orange: medium predicted risk (score 0.3–0.6)
+        - Green: low predicted risk (score < 0.3)
+        """)
+    else:
+        st.markdown("""
+        **Accident locations**
+        - Blue: road segment with at least one recorded accident
+        """)
+
+
+with tab2:
+    col1, col2 = st.columns([3, 2])
+
+    with col1:
+        st.image("plots/feature_importance.png", caption="Top 15 feature importances", width= 600)
+
+    with col2:
+        st.markdown("""
+        ### Key findings: ...
+        """)
+
+    col1, col2 = st.columns([3, 2])
+
+    with col1:
+        st.image("plots/shap_summary.png", caption="SHAP summary: feature impact on predicted risk", width= 600)
+
+    with col2:
+        st.markdown("""
+        ### Key findings: ...
+        """)
+
     st.markdown("""
-    **Risk level colour guide**
-    - Red: high predicted risk (score > 0.6)
-    - Orange: medium predicted risk (score 0.3–0.6)
-    - Green: low predicted risk (score < 0.3)
+    **Summary:** 
+                ...
     """)
-else:
-    st.markdown("""
-    **Accident locations**
-    - Blue: road segment with at least one recorded accident
-    """)
-
-
 
 
 
