@@ -107,7 +107,7 @@ col1.image("app/assets/cyclosafe_logo_bike.png", width=80)
 col2.markdown("### CycloSafe")
 
 
-st.sidebar.markdown("Cyclist risk prediction · Delft · 2022 - 2024")
+st.sidebar.markdown("Cyclist risk prediction, Delft (2022 - 2024)")
 st.sidebar.divider()
 
 st.sidebar.header("Filters")
@@ -144,58 +144,64 @@ pred_filtered = pred[
 #each road segment has multiple highway tags stored as a list
 #take only first/primary road type
 #because if multiple names, finds no match 
-def clean_highway_display(val):
-    try:
-        parsed = ast.literal_eval(val)
-        if isinstance(parsed, list):
-            return parsed[0]
-        return val
-    except:
-        return str(val).strip("[]'\"").split("'")[0].strip()
+#def clean_highway_display(val):
+#    try:
+#        parsed = ast.literal_eval(val)
+#        if isinstance(parsed, list):
+#            return parsed[0]
+#        return val
+#    except:
+#        return str(val).strip("[]'\"").split("'")[0].strip()
 
-pred["highway"] = pred["highway"].astype(str).apply(clean_highway_display)
+#pred["highway"] = pred["highway"].astype(str).apply(clean_highway_display)
 
 #nice display names for the cleaned values
-road_type_labels = {
-    "service": "service road",
-    "residential": "residential street",
-    "cycleway": "cycleway",
-    "tertiary": "tertiary road",
-    "secondary": "secondary road",
-    "primary": "primary road",
-    "living_street": "living street",
-    "pedestrian": "pedestrian zone",
-    "unclassified": "unclassified road",
-    "path": "path",
-    "track": "track",
-    "busway": "busway",
-    "bridleway": "bridleway",
-    "trunk": "trunk road",
-    "primary_link": "primary link",
-    "secondary_link": "secondary link",
-    "tertiary_link": "tertiary link",
-    "trunk_link": "trunk link"
-}
+#road_type_labels = {
+#    "service": "service road",
+#    "residential": "residential street",
+#    "cycleway": "cycleway",
+#    "tertiary": "tertiary road",
+#    "secondary": "secondary road",
+#    "primary": "primary road",
+#    "living_street": "living street",
+#    "pedestrian": "pedestrian zone",
+#    "unclassified": "unclassified road",
+#    "path": "path",
+#    "track": "track",
+#    "busway": "busway",
+#    "bridleway": "bridleway",
+#    "trunk": "trunk road",
+#    "primary_link": "primary link",
+#    "secondary_link": "secondary link",
+#    "tertiary_link": "tertiary link",
+#    "trunk_link": "trunk link"
+#}
 
 #get unique road types from original highway column in road_segments.csv
 road_types = sorted(pred["highway"].dropna().unique().tolist())
+
 #map types to display names
-display_names = [road_type_labels.get(rt, rt) for rt in road_types]
+#display_names = [road_type_labels.get(rt, rt) for rt in road_types]
 
-selected_road_display = st.sidebar.multiselect(
+selected_road_types = st.sidebar.multiselect(
     label="Filter by road type",
-    options=display_names,
-    default=[]  #empty default means all road types shown
+    options=road_types,
+    default=[]  # empty default means all road types shown
 )
+#selected_road_display = st.sidebar.multiselect(
+#    label="Filter by road type",
+#    options=display_names,
+#    default=[]  #empty default means all road types shown
+#)
 
-# convert back to raw values for filtering
-display_to_raw = {v: k for k, v in road_type_labels.items()}
-selected_road_types = [display_to_raw.get(d, d) for d in selected_road_display]
 
-# apply road type filter, if nothing selected show all
+#convert back to raw values for filtering
+#display_to_raw = {v: k for k, v in road_type_labels.items()}
+#selected_road_types = [display_to_raw.get(d, d) for d in selected_road_display]
+
+#apply road type filter, if nothing selected show all
 if selected_road_types:
     pred_filtered = pred_filtered[pred_filtered["highway"].isin(selected_road_types)]
-
 
 #info line for both sliders
 st.sidebar.markdown(f"Showing **{len(pred_filtered):,}** of **{len(pred):,}** segments")
