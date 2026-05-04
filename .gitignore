@@ -11,6 +11,8 @@ __pycache__/
 *.py[cod]
 *.pkl
 .ipynb_checkpoints/
+notebooks/cache/
+cache/
 
 # Environment
 .env
