@@ -14,7 +14,7 @@ conda activate cyclosafe
 
 ### shap plot
 
-Even though model prediction are not that good and F1 score is very low, I still used the SHAP plot. SHAP does not evaluate whether the model is accurate, but it explains what the model learned from the data it had. 
+Even though model prediction is not that good and F1 score is very low, I still used the SHAP plot. SHAP does not evaluate whether the model is accurate, but it explains what the model learned from the data it had. 
 
 The model learned that cycleways are associated with higher predicted risk based on patterns in the training data.
 
