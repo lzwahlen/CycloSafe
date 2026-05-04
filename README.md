@@ -1,5 +1,17 @@
 # CycloSafe
 
+Predicts cyclist accident hotspots on Delft road segments using real Dutch open data.
+
+## What I Built
+
+I developed an end-to-end ML pipeline to analyse the risk of bike accidents in Delft. Joining the BRON accidents dataset (2022-2024) with OpenStreetMap road infrastructure data (retrieved via OSMnx), the model predicts the risk of a bike accident happening on a specific road segment. I compared a Logistic Regression baseline with a Random Forest classifier to evaluate performance and analysed how different road infrastructure features correlate with the number of accidents happening. The final results are shown in an interactive Streamlit dashboard with a Pydeck risk map to help visualise high-danger zones and accident locations.
+
+*to do: add screenshots of map*
+
+## Key findings
+
+## Results
+
 ## Temp notes on plots
  
 ### feature importance plot
@@ -34,7 +46,11 @@ Findings:
 - highway_service has widest overall spread -> affects more segments than any other feature, but per-segment influence is weak
 - violet dots in maxspeed: segments have medium speed limit, neither highest nor lowest in dataset -> present but maybe unreliable 
 
-
+## Tech Stack 
+I built this project using a Python-based geospatial and ML stack:
+- Data Processing: OSMnx and GeoPandas for handling the road network graphs and spatial data
+- Machine Learning: scikit-learn for the Random Forest classifier and Logistic Regression baseline, SHAP for interpreting feature importance
+- Visualisation: Streamlit for the interactive dashboard and Pydeck for high-performance spatial mapping
 
 ## Setup:
 Prerequisites:
@@ -71,7 +87,7 @@ streamlit run app/app.py
 ## Notes
 
 - Logo: CycloSafe bike logo drawn by me
-- Accident data: Sourced from the BRON database via data.overheid.nl
+- Accident data: Sourced from the BRON database via data.overheid.nl (www.data.overheid.nl)
     - Dataset version: The specific dataset used is the ongevallen_2022_2024 GeoJSON dataset.
 - Road network: Sourced from OpenStreetMap (www.openstreetmap.org)
     - Implementation: The road network data was pulled using the osmnx Python library for the regions Delft, Rijswijk, Pijnacker-Nootdorp, Midden-Delfland, Den Haag, and Westland.  
