@@ -5,14 +5,15 @@ import shap
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
 
 #load models from disk (s.t. no retraining needed)
 lr = joblib.load("../models/logistic_regression.pkl")
 rf = joblib.load("../models/random_forest.pkl")
 
 X, y = load_data()
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, stratify=y, random_state=42
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42
 )
 
 #use SHAP explainer for Random Forest
@@ -42,8 +43,83 @@ plt.close()
 
 road_segments_full = pd.read_csv("../data/road_segments.csv")
 
-#add spatial cross-validation? 
 #(for more honest f1 score by testing on unseen geographic areas of Delft instead of random segments)
+#data from the same neighbourhood is similar, in 80/20 train/test split data of same neighborhood end up in 
+#train and test data which makes the model already have seen train data very similar to the test data
+#sol: spatial crossvalidation (-> explicit geographical separation)
+
+#spatial cross validation:
+
+#load raw csv data (including lat and lon) and reset indices
+road_segments_full = pd.read_csv("../data/road_segments.csv")
+#reset indices to ensure allignment
+road_segments_full = road_segments_full.reset_index(drop=True)
+X_reset = X.reset_index(drop=True)
+y_reset = y.reset_index(drop=True)
+
+#define center point and quadrant function for the geographical data split
+LAT_MID = 52.012
+LON_MID = 4.357
+
+def get_quadrant(lat, lon):
+    if lat >= LAT_MID and lon >= LON_MID:
+        return 0  #north east
+    elif lat >= LAT_MID and lon < LON_MID:
+        return 1  #north west
+    elif lat < LAT_MID and lon >= LON_MID:
+        return 2  #south east
+    else:
+        return 3  #south west
+
+#assign quadrant to every road segment
+road_segments_full["quadrant"] = road_segments_full.apply(
+    lambda row: get_quadrant(row["lat"], row["lon"]), axis=1
+)
+
+#safety check, ensure good quadrant distribution
+#print(road_segments_full["quadrant"].value_counts().sort_index())
+#print(road_segments_full.groupby("quadrant")["high_risk"].sum())
+
+spatial_f1_scores = []
+
+#rotation loop, four times per quadrant
+#always one quadrant in test set and other three in training set
+for q in range(4):
+    test_mask = (road_segments_full["quadrant"] == q).values
+    train_mask = ~test_mask
+
+    #apply geographic mask to/split features and labels
+    X_spatial_train = X_reset[train_mask]
+    y_spatial_train = y_reset[train_mask]
+    X_spatial_test = X_reset[test_mask]
+    y_spatial_test = y_reset[test_mask]
+
+    #skip empty quadrants
+    if y_spatial_test.sum() == 0:
+        print(f"skip quadrant {q}, no high-risk segments")
+        continue
+
+    #train each time a new model
+    rf_spatial = RandomForestClassifier(
+        n_estimators=200,
+        random_state=42,
+        class_weight="balanced"
+    )
+    rf_spatial.fit(X_spatial_train, y_spatial_train)
+
+    #evaluate on test quadrant
+    y_pred = rf_spatial.predict(X_spatial_test)
+    f1 = f1_score(y_spatial_test, y_pred, zero_division=0)
+    spatial_f1_scores.append(f1)
+
+y_pred_random = rf.predict(X_test)
+random_split_f1 = f1_score(y_test, y_pred_random, zero_division=0)
+
+#output results of spatial cross validation and compare to random split
+mean_spatial_f1 = np.mean(spatial_f1_scores)
+print(f"Mean spatial CV F1:  {mean_spatial_f1:.3f}")
+print(f"Random split F1:     {random_split_f1:.3f}")
+print(f"Performance drop:    {random_split_f1 - mean_spatial_f1:.3f}")
 
 #save predictions
 #get risk scores for all segments, not just test set (what the dashboard map will use)

@@ -12,7 +12,7 @@ st.set_page_config( page_title="CycloSafe", layout="wide")#uses full browser wid
 st.title("CycloSafe")
 st.markdown("Predicted cyclist accident risk on Delft road segments.")
 
-#load data data
+#load data 
 #load file once, cache it (without it, file reloads every time user interacts with anything)
 @st.cache_data
 def load_predictions():
