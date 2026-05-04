@@ -1,6 +1,6 @@
 # CycloSafe
 
-CycloSafe predicts cyclist accident hotspots on Delft road segments using real Dutch open data.
+CycloSafe predicts accident hotspots for cyclists on road segments in Delft (Netherlands) using real Dutch open data.
 
 ## What I Built
 
@@ -12,6 +12,9 @@ The dashboard is fully interactive, allowing users to filter road segments by ty
 
 ![CycloSafe Dashboard Interface](app/assets/cyclosafe_dashboard.png)
 *Figure 1: The dynamic CycloSafe dashboard, designed to help users explore and filter predicted collision risks on the streets of Delft*
+
+![CycloSafe Map of Actual Accidents](app/assets/cyclosafe_dashboard_accidents.png)
+*Figure 2: The CycloSafe Actual Accidents Map shows the collision locations across the road network. Hovering over a specific data point reveals more information on the risk score and the amount of accidents that occured*
 
 ## Key findings
 
