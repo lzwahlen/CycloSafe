@@ -10,7 +10,7 @@ st.set_page_config( page_title="CycloSafe", layout="wide")#uses full browser wid
 
 #page title
 st.title("CycloSafe")
-st.markdown("Predicted cyclist accident risk on Delft road segments.")
+
 
 #load data 
 #load file once, cache it (without it, file reloads every time user interacts with anything)
@@ -63,6 +63,24 @@ pred = load_predictions()
 #round predicted risk score
 pred["predicted_risk_score"] = pred["predicted_risk_score"].round(3)
 
+#add metrics row at the top
+col1, col2, col3, col4 = st.columns(4)
+col1.metric("Road segments", f"{len(pred):,}")
+col2.metric("Accident locations", f"{pred['accident_count'].gt(0).sum():,}")
+col3.metric("High risk predicted", f"{pred['predicted_high_risk'].sum():,}")
+col4.metric("Model", "Random Forest")
+
+#add project description
+st.markdown("""
+This dashboard shows predicted cyclist accident risk across Delft road segments.
+
+It is built using real Dutch BRON accident data and OpenStreetMap infrastructure features, using a Random Forest classifier trained on road type, speed limit and lane count to assign a risk score to every segment in the city.
+
+The filters on the left help to explore which road segments the model flagged as high risk and where recorded accidents actually occurred.        
+ """)
+st.divider()  #clean horizontal line
+
+
 road_paths = load_road_network()
 
 
@@ -70,7 +88,7 @@ def risk_to_colour(score):
     #maps 0-1 risk score to RGB colour
     #grey → orange → red gradient
     if score < 0.3:
-        return [150, 150, 150, 160]   #grey (low risk)
+        return [34, 139, 34, 160]     #green (low risk)
     elif score < 0.6:
         return [255, 140, 0, 180]     #orange (medium risk)
     else:
@@ -80,10 +98,51 @@ def risk_to_colour(score):
 pred["colour"] = pred["predicted_risk_score"].apply(risk_to_colour)
 
 
+#add sidebar title and slider
+#st.sidebar.image("app/assets/cyclosafe_logo_bike.png", width=80)
+#st.sidebar.markdown("### CycloSafe")
+col1, col2 = st.sidebar.columns([1, 3])
+col1.image("app/assets/cyclosafe_logo_bike.png", width=80)
+col2.markdown("### CycloSafe")
+
+
+st.sidebar.markdown("Cyclist risk prediction · Delft · 2024")
+st.sidebar.divider()
+
+st.sidebar.header("Filters")
+
+#risk score slider, filters which segments are shown on the map
+min_risk = st.sidebar.slider(
+    label="Minimum risk score",
+    min_value=0.0,
+    max_value=1.0,
+    value=0.0,        #default shows all segments
+    step=0.05
+)
+
+#add accident count slider
+min_accidents = st.sidebar.slider(
+    label="Minimum accident count",
+    min_value=0,
+    max_value=int(pred["accident_count"].max()),
+    value=0,          #default shows all segments
+    step=1
+)
+
+#filter the dataframe based on slider values
+pred_filtered = pred[
+    (pred["predicted_risk_score"] >= min_risk) &
+    (pred["accident_count"] >= min_accidents)
+]
+
+#info line for both sliders
+st.sidebar.markdown(f"Showing **{len(pred_filtered):,}** of **{len(pred):,}** segments")
+
+
 #pydeck layer (scatterplotLayer places one dot per row at [lon, lat])
 layer = pdk.Layer(
     "ScatterplotLayer",
-    data=pred,
+    data=pred_filtered,  #filtered instead of full pred
     get_position=["lon", "lat"],
     get_fill_color="colour",        #column name for colour
     get_radius=15,
@@ -103,9 +162,9 @@ layer_roads = pdk.Layer(
 #layer to highlight only segments where accidents actually happened
 layer_accidents = pdk.Layer(
     "ScatterplotLayer",
-    data=pred[pred["accident_count"] > 0],
+    data=pred_filtered[pred_filtered["accident_count"] > 0],
     get_position=["lon", "lat"],
-    get_fill_color=[255, 255, 0, 230],  #yellow
+    get_fill_color=[30, 144, 255, 180],  #blue
     get_radius=25,                       #larger so they sit visibly on top
     pickable=True
 )
@@ -150,19 +209,10 @@ view_mode = st.radio(
 if view_mode == "Predicted risk score":
     layers = [layer_roads, layer]
     tooltip = tooltip_pred
-    st.markdown("""
-    **Risk level colour guide**
-    - Red: high predicted risk (score > 0.6)
-    - Orange: medium predicted risk (score 0.3–0.6)
-    - Grey: low predicted risk (score < 0.3)
-    """)
+
 else:
     layers = [layer_roads, layer_accidents]
     tooltip = tooltip_accidents
-    st.markdown("""
-    **Accident locations**
-    - Yellow: road segment with at least one recorded accident
-    """)
 
 
 #render map
@@ -176,8 +226,24 @@ st.pydeck_chart(
     )
 )
 
+#color guide based on selection
+if view_mode == "Predicted risk score":
+    st.markdown("""
+    **Risk level colour guide**
+    - Red: high predicted risk (score > 0.6)
+    - Orange: medium predicted risk (score 0.3–0.6)
+    - Green: low predicted risk (score < 0.3)
+    """)
+else:
+    st.markdown("""
+    **Accident locations**
+    - Blue: road segment with at least one recorded accident
+    """)
 
-#add sidebar filter for risk score?
+
+
+
+
 #add shap chart? 
 
 #st.markdown("""
@@ -185,5 +251,5 @@ st.pydeck_chart(
 #- Red — high predicted risk (score > 0.6)
 #- Orange — medium predicted risk (score 0.3–0.6)
 #- Grey — low predicted risk (score < 0.3)
-#- Yellow — road segment with at least one recorded accident
+#- Blue — road segment with at least one recorded accident
 #""")

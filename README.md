@@ -48,3 +48,8 @@ Findings:
 - highway_tertiary has strongest positve val (0.15), signals strongest risk push, maybe because moderate speed with cars and bikes mixed -> dangerous
 - highway_service has widest overall spread -> affects more segments than any other feature, but per-segment influence is weak
 - violet dots in maxspeed: segments have medium speed limit, neither highest nor lowest in dataset -> present but maybe unreliable 
+
+
+## Other
+
+Cyclosafe bike logo drawn by me
