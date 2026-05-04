@@ -126,8 +126,14 @@ print(f"Performance drop:    {random_split_f1 - mean_spatial_f1:.3f}")
 all_probs = rf.predict_proba(X)[:, 1]  # continuous risk score 0-1
 all_preds = (all_probs >= 0.5).astype(int)
 
+#(add highway for selection in dashboard)
 predictions = pd.DataFrame({ "lat": road_segments_full["lat"].values, "lon": road_segments_full["lon"].values, "predicted_risk_score": all_probs,
-    "predicted_high_risk": all_preds, "high_risk_actual": y.values, "accident_count": road_segments_full["accident_count"].values})
+    "predicted_high_risk": all_preds, "highway": road_segments_full["highway"].values, "high_risk_actual": y.values, "accident_count": road_segments_full["accident_count"].values})
+
+#check if highway is in predictions.csv
+#print(predictions.columns.tolist())
+#print(sorted(predictions["highway"].dropna().unique().tolist()))
+
 
 predictions.to_csv("../data/predictions.csv", index=False)
 
