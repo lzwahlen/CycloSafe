@@ -15,7 +15,7 @@ def load_data():
     
     #strip list wrapper (e.g. from ['50'] to 50) before calling to numeric (otherwise wouldn't recognise numbers and turn everything to NaN)
     road_segments["maxspeed"] = road_segments["maxspeed"].str.extract(r'(\d+)')[0]
-    road_segments["lanes"] = road_segments["maxspeed"].str.extract(r'(\d+)')[0]
+    road_segments["lanes"] = road_segments["lanes"].str.extract(r'(\d+)')[0]
     #force to NaN if conversion to numerical is not possible
     road_segments["maxspeed"] = pd.to_numeric(road_segments["maxspeed"], errors="coerce") 
     road_segments["lanes"] = pd.to_numeric(road_segments["lanes"], errors="coerce")
@@ -88,6 +88,18 @@ def plot_feature_importance(model, feature_names):
     #feature importance score from every featrue from trained Random Forest
     #how to plot/handle logistic regression? (no importances assigned)
 
+    importances = model.feature_importances_
+    indices = importances.argsort()[::-1][:15] #use top 15 only, cleaner chart
+    
+    plt.figure(figsize=(10, 6))
+    plt.bar(range(15), importances[indices])
+    plt.xticks(range(15), [feature_names[i] for i in indices], rotation=45, ha='right')
+    plt.title("Random Forest — Top 15 Feature Importances")
+    plt.tight_layout()
+    plt.savefig("../models/feature_importance.png", dpi=150)
+    plt.close() 
+
+    
     pass
 
 #temporary to test model functions
