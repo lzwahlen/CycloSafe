@@ -73,3 +73,8 @@ output["accident_rate"] = output["accident_count"] / output["length"].clip(lower
 
 #save output to csv file for training
 output.to_csv("../data/road_segments.csv", index=False)
+
+#save Delft boundary for use in dashboard
+import osmnx as ox
+delft_boundary = ox.geocode_to_gdf("Delft, Netherlands")
+delft_boundary.to_file("../data/delft_boundary.geojson", driver="GeoJSON")

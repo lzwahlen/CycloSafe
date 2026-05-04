@@ -26,8 +26,8 @@ def load_predictions():
     #]
 
     #filter with delft region border
-    #download official Delft boundary from OSM
-    delft_boundary = ox.geocode_to_gdf("Delft, Netherlands")
+    #load Delft boundary from disk — no network request needed
+    delft_boundary = gpd.read_file("data/delft_boundary.geojson")
     delft_polygon = delft_boundary.geometry.iloc[0]
 
     #check which segment centroids fall inside the boundary
