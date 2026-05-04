@@ -52,7 +52,6 @@ def load_data():
     #exclude high_risk for features(will be predicted), also exclude geometry,lat, lon, accident_count(used for creation of high_risk)
     feature_cols = [col for col in road_segments.columns if col not in ["high_risk", "geometry", "lat", "lon", "accident_count", "accident_rate", "length"]]
 
-
     X = road_segments[feature_cols] #create feature matrix(inputs for model)
     y = road_segments["high_risk"]  #create label vector, what model is trying to predict(output)
     
