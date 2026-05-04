@@ -96,6 +96,15 @@ layer_roads = pdk.Layer(
     pickable=False
 )
 
+#layer to highlight only segments where accidents actually happened
+layer_accidents = pdk.Layer(
+    "ScatterplotLayer",
+    data=pred[pred["accident_count"] > 0],
+    get_position=["lon", "lat"],
+    get_fill_color=[255, 255, 0, 230],  # yellow
+    get_radius=25,                       #larger so they sit visibly on top
+    pickable=True
+)
 
 #set initial map view
 view_state = pdk.ViewState(
@@ -118,9 +127,17 @@ tooltip = {
 #render map, stack layers
 st.pydeck_chart(
     pdk.Deck(
-        layers=[layer_roads, layer],
+        layers=[layer_roads, layer, layer_accidents],
         initial_view_state=view_state,
         tooltip=tooltip,
         map_style="mapbox://styles/mapbox/light-v9"  #clean light basemap
     )
 )
+
+st.markdown("""
+**Risk level colour guide**
+- Red — high predicted risk (score > 0.6)
+- Orange — medium predicted risk (score 0.3–0.6)
+- Grey — low predicted risk (score < 0.3)
+- Yellow — road segment with at least one recorded accident
+""")

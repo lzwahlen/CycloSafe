@@ -9,6 +9,12 @@ conda env create -f environment.yml
 conda activate cyclosafe
 ```
 
+run app with 
+
+```bash
+streamlit run app/app.py      
+```
+
 ## Temp notes on plots
  
 ### feature importance plot 
