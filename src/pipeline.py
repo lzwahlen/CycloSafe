@@ -29,10 +29,23 @@ road_segments["accident_count"] = road_segments.index.map(accident_counts).filln
 #print(f"total accidents: {road_segments['accident_count'].sum()}")
 #print(f"segments with min. one accident: {len(accident_counts)}")
 
-#create a high-risk label 
-roads_accident = road_segments[road_segments["accident_count"] > 0]["accident_count"] #consider only roads with accidents
+#compute segment length in metres to normalize accident counts
+road_segments["length"] = road_segments.geometry.length
+
+#compute accident rate = accidents per metre (removes length bias)
+road_segments["accident_rate"] = road_segments["accident_count"] / road_segments["length"].clip(lower=1)
+
+
+#create a high-risk label, base high risk on accideent rate (instead of accident count)
+#roads_accident = road_segments[road_segments["accident_count"] > 0]["accident_count"] #consider only roads with accidents
+roads_accident = road_segments[road_segments["accident_count"] > 0]["accident_rate"]
 threshold = roads_accident.quantile(0.75)
-road_segments["high_risk"] = (road_segments["accident_count"] > threshold).astype(int)
+#road_segments["high_risk"] = (road_segments["accident_count"] > threshold).astype(int)
+
+#more aggressive high-risk: any segment with 1 or more accidents is high risk
+road_segments["high_risk"] = (road_segments["accident_count"] >= 1).astype(int)
+print(road_segments["high_risk"].sum())
+print(road_segments["high_risk"].mean())
 
 #threshold = 1, a segment needs min. two accidents to be considered high risk
 #print(f"threshold (75th percentile): {threshold}") 
@@ -41,7 +54,7 @@ road_segments["high_risk"] = (road_segments["accident_count"] > threshold).astyp
 
 #reproject back for the final output for consistency
 road_segments = road_segments.to_crs("EPSG:4326")
-output = road_segments[["geometry", "highway", "maxspeed", "lanes", "junction", "accident_count", "high_risk"]].copy()
+output = road_segments[["geometry", "highway", "maxspeed", "lanes", "junction", "accident_count", "accident_rate", "length", "high_risk"]].copy()
 
 
 #compute centroid in projected CRS for accuracy, then extract lat/lon in 4326
@@ -51,6 +64,12 @@ output["lon"] = centroids.x
 
 #to verify lat/lon
 #print(output[["lat", "lon"]].describe())
+
+#add segment length in metres, longer segments accumulate more exposure
+output["length"] = output.to_crs(epsg=28992).geometry.length  # <-- add this line
+#add accidents per metre instead of raw accident count
+output["accident_rate"] = output["accident_count"] / output["length"].clip(lower=1)  # clip avoids division by zero
+
 
 #save output to csv file for training
 output.to_csv("../data/road_segments.csv", index=False)

@@ -4,6 +4,18 @@ import joblib
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score, precision_score, recall_score
+import ast
+
+def clean_highway(val):
+    #each road segment has multiple highway tags stored as a list
+    #take only first/primary road type
+    try:
+        parsed = ast.literal_eval(val)
+        if isinstance(parsed, list):
+            return parsed[0]
+        return val
+    except:
+        return str(val).strip("[]'\"").split("'")[0].strip()
 
 
 def load_data():
@@ -12,6 +24,7 @@ def load_data():
     road_segments = road_segments.drop(columns=["Unnamed: 0"], errors="ignore")
 
     #print(road_segments.shape)
+    #print(f"high risk segments: {road_segments['high_risk'].sum()}")
 
     #maxspeed and lanes might have missing values
     
@@ -27,12 +40,19 @@ def load_data():
     road_segments["lanes"] = road_segments["lanes"].fillna(road_segments["lanes"].median())
 
     #one-hot encoding to give every column (with text vals) numerical unique value for the model to work with
+    #clean highway column before encoding (removes multi-value combinations)
+    road_segments["highway"] = road_segments["highway"].astype(str).apply(clean_highway)
+
+    #sanity check 
+    #print(road_segments["highway"].value_counts())
+
     road_segments = pd.get_dummies(road_segments, columns=["highway", "junction"])
 
     #define feature cols and lbls
     #exclude high_risk for features(will be predicted), also exclude geometry,lat, lon, accident_count(used for creation of high_risk)
-    feature_cols = [col for col in road_segments.columns if col not in ["high_risk", "geometry", "lat", "lon", "accident_count"]]
-    
+    feature_cols = [col for col in road_segments.columns if col not in ["high_risk", "geometry", "lat", "lon", "accident_count", "accident_rate", "length"]]
+
+
     X = road_segments[feature_cols] #create feature matrix(inputs for model)
     y = road_segments["high_risk"]  #create label vector, what model is trying to predict(output)
     
@@ -62,10 +82,15 @@ def train_random_forest(X_train, y_train):
 
 #add another model later? (depending on evaluation)
 
-def evaluate_model(model, X_test, y_test, name):
+def evaluate_model(model, X_test, y_test, name, threshold = 0.5):
     #predict, print F1/precision/recall, return scores dict
 
-    y_pred = model.predict(X_test)
+    #predict() uses a fixed threshold
+    #y_pred = model.predict(X_test)
+
+    #fix with predict_proba() to manually change threshold
+    probs = model.predict_proba(X_test)[:, 1]
+    y_pred = (probs >= threshold).astype(int)
 
     #use f1 score to balance recall and precision(find most dangerous segments, while not having too many false alarms)
     f1 = f1_score(y_test, y_pred) # = 2/((1/precision) + (1/recall))
@@ -101,8 +126,6 @@ def plot_feature_importance(model, feature_names):
     plt.savefig("../plots/feature_importance.png", dpi=150)
     plt.close() 
 
-
-    pass
 
 #temporary to test model functions
 #if __name__ == "__main__":
