@@ -10,8 +10,15 @@ conda activate cyclosafe
 ```
 
 ## Temp notes on plots
+ 
 
 ### shap plot
+
+Even though model prediction are not that good and F1 score is very low, I still used the SHAP plot. SHAP does not evaluate whether the model is accurate, but it explains what the model learned from the data it had. 
+
+The model learned that cycleways are associated with higher predicted risk based on patterns in the training data.
+
+These findings should be treated as preliminary until the model's predictive performance improves.
 
 - each dot in plot represents one road semgent
 - horizontal position = how strongly that feature pushed predicted risk score up (right) or down (left)
