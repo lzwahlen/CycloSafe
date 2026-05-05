@@ -63,16 +63,30 @@ Findings:
 
 ## Results
 
+To evaluate the model I calculated the achieved F1 Score, precision and recall.
+
+- Precision: of all the segments that were predicted as high-risk, how many actually were?
+- Recall: of all the segments that were actually high-risk, how many were found by the model?
+- F1 Score: mean of precision and recall, summarising how well a classifier performs on an imbalanced dataset
+
+I did not just use and show the accuracy of the model, because the dataset has 858 high risk segments out of 116625. A model that classifies every segment as low-risk would get a very high accuracy (over 99%), but would in reality be completely useless. 
+
 | Model | F1 Score | Precision | Recall |
 | :--- | :---: | :---: | :---: |
 | Logistic Regression | 0.025 | 0.013 | 0.599 |
 | Random Forest | 0.027 | 0.014 | 0.552 |
 
+The F1 Score of both models is very low. This indicates that the models are not able to reliably classify road segments as high- or low-risk. 
+
+As seen in the feature importance, the model assigns a risk score based on different attributes of the road segments such as road features and maxspeed. These current features (for example road type) are weak proxies for the actual risk. 
+
+For example, two roads of the same type can have different cycling traffic: one could be a quiet road behind a supermarket and another one could be on a busy lane, used by hundreds of cyclists daily. For the model they would look almost identical, which makes it hard to predict different risks for the two roads.
+
+To fix this, I searched for another dataset that captures the amount of cyclists on the roads of Delft. However, the dataset I found (NDW FietsData) only contained data for max. 14 locations in Delft for the year 2024 (for previous years I found even less data points on the website). This is not enough, most roads would get the median fallback value. This makes the feature not useful enough for training, which is why I didn't include it in the final pipeline of the model.
+
+I tried to compare a more complex Random Forest Model to a Logistic Regression baseline, but both models perform similarly as the limiting factor is the data, not the model complexity. 
+
 ---
-
-
-
-
 
  <table>
   <tr>
