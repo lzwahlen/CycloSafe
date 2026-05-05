@@ -23,44 +23,43 @@ The dashboard is fully interactive, allowing users to filter road segments by ty
 
 *to do: add general findings and thoughts, add screenshot of model insight of dashboard*
 
+### Feature Importance 
 
-### Temp (!) notes on plots
-### feature importance plot
+In the following plot, each bar shows how much that feature contributed to the model's decision across all Random Forest trees. The values sum up to 1 (e.g. a bar at 0.27 means that feature was responsible for 27% of all splits/ decision points). A taller bar means the model relied on that specific feature more.
 
 ![Feature Importance - Top 15 feature importances](plots/feature_importance.png)
+*Figure 3: The general impact of different features on the models decision.*
 
-Findings:
-- highway_cycleway at 0.075: very counterintuitive, I would have expected cycling infrastructure to reduce risk, not predict it, but maybe this is because they have more cyclists and therefore more accidents, this comes from the data limitation introduced by BRON as BRON records accidents but not cyclist volume, so high-use infrastructure looks risky even when it is well designed
-- highway_service at 0.267: service roads (access roads, parking aisles, driveways, and back-of-building roads) are most predictive features, surprising that on service roads most cyclist accidents happen, maybe because service roads are very common in osm network or because they are tight spaces with no cycling infrastructure
-- maxspeed at 0.160: speed limit second strongest signal, makes sense since higher speed creates more severe accidents
-- lanes at 0.090: more lanes generally means busier, wider roads, shap plot showed that in some cases wider lanes push toward lower risk which could be the case because wider roads in Delft might have better cycling infrastructure or clearer lane separation
-
-In total, the plot shows that the model learned something real from the data, even if it is not strong enough to classify reliably. 
-
-It explains why F1 is 0.027. In a dataset where features strongly separate classes the top feature should be at 0.5 or higher. Even the best feature only explains about a quarter of the model's decisions which means no single feature is a reliable predictor on its own.
+In total, the plot shows that the model learned something from different features of the data and tries to make decisions based on different factors.
 
 
-### shap plot
+### SHAP Summary
+
+The SHAP plot below explains what the model learned from the data it had. 
+- Each point in the plot represents one road semgent.
+- The horizontal position of the point determines how strongly the corresponding feature pushed the predicted risk score up (right) or down (left).
+- The point colour shows the segment's actual feature value. 
+For example for cycleways: if the point is red (=1) the segment actually is a cycleway, if the point is blue (=0) the point is not a cycleway
+
 
 ![SHAP Summary: Feature Impact on High-Risk Prediction](plots/shap_summary.png)
+*Figure 4: How much different features pushed a specific prediction towards higher or lower risk.*
 
-Even though model prediction is not that good and F1 score is very low, I still used the SHAP plot. SHAP does not evaluate whether the model is accurate, but it explains what the model learned from the data it had. 
+### Findings
 
-The model learned that cycleways are associated with higher predicted risk based on patterns in the training data.
+- Service roads 
+    The feature importance plot shows that service roads (access roads, parking aisles, driveways, and back-of-building roads) have the most impact on the model's decision. I would have expected that the maxspeed to be more impactful. From the SHAP plot it becomes visible that service roads reduce the predicted risk for accidents to happen. The reason for this might be that they are low-speed roads where cyclists and (possibly turning) cars drive attentively.
 
-These findings should be treated as preliminary until the model's predictive performance improves.
+- Cycleways 
+    This is the most counterintuitive finding. From the SHAP plot it becomes visible that highway_cycleway increases the risk the model is predicting. I would have expected that cycling infrastructure reduces the predicted risk. BRON records the number of accidents, but not the number of cyclists per road segment. So the reason for this finding could be that more cyclists drive on the cycleways and more cyclists means more recorded accidents. Thus infrastructure explicitly designed for bikes appears risky even though it is might be well designed.
 
-- each dot in plot represents one road semgent
-- horizontal position = how strongly that feature pushed predicted risk score up (right) or down (left)
-- dot color = segments actual feature value (e.g. for cycleways: red = 1 -> segment is cycleway, blue = 0 -> segment is not a cycleway)
+- Speed
+    Maxspeed is the second strongest signal, which makes sense as a higher speed limit causes more frequent and severe accidents. The SHAP summary shows that lower speed pushes the risk towards lower values. The violet color stands for a moderate speed which does not influence the model as much. What stands out is that a higher speed does not necessarily increase the predicted risk, but also does not reduce it. The reason for this could be that roads with higher speed limits also have safer road infrastructure, which is reducing the risk.
 
-Findings:
-- highway_cycleway has many dots to the right, cycleways are associated with higher predicted risk, makes sense since there is more cycling in general
-- junction_roundabout has one red dot at -0.45, being roundabout = very low predicted risk, makes sense since dutch roundabout separates cyclists from cars (safe)
-- highway_tertiary has strongest positve val (0.15), signals strongest risk push, maybe because moderate speed with cars and bikes mixed -> dangerous
-- highway_service has widest overall spread -> affects more segments than any other feature, but per-segment influence is weak
-- violet dots in maxspeed: segments have medium speed limit, neither highest nor lowest in dataset -> present but maybe unreliable 
+- Roundabout
+    In the SHAP plot junction_roundabout has one red point at -0.45. This shows that roundabouts reduce the predicted risk by a lot. This makes sense because dutch roundabouts separate cyclists from cars which leads to less accidents.
 
+    
 ## Results
 
 To evaluate the model I calculated the achieved F1 Score, precision and recall.
@@ -75,6 +74,7 @@ I did not just use and show the accuracy of the model, because the dataset has 8
 | :--- | :---: | :---: | :---: |
 | Logistic Regression | 0.025 | 0.013 | 0.599 |
 | Random Forest | 0.027 | 0.014 | 0.552 |
+*Table 1: The F1 Score, Precision and Recall for the Logistic Regression baseline and the Random Forest classifier.*
 
 The F1 Score of both models is very low. This indicates that the models are not able to reliably classify road segments as high- or low-risk. 
 
@@ -136,9 +136,9 @@ streamlit run app/app.py
 ## Notes
 
 - Logo: CycloSafe bike logo drawn by me
-- Accident data: Sourced from the BRON database via ([data.overheid.nl] https://data.overheid.nl/)
+- Accident data: Sourced from the BRON database via ([data.overheid.nl](https://data.overheid.nl/))
     - Dataset version: The specific dataset used is the ongevallen_2022_2024 GeoJSON dataset.
-- Road network: Sourced from ([OpenStreetMap] https://www.openstreetmap.org/)
+- Road network: Sourced from ([OpenStreetMap](https://www.openstreetmap.org/))
     - Implementation: The road network data was pulled using the osmnx Python library for the regions Delft, Rijswijk, Pijnacker-Nootdorp, Midden-Delfland, Den Haag, and Westland.  
 
 
