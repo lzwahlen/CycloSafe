@@ -376,7 +376,6 @@ with tab2:
     st.markdown("""
     >**Missing cyclist volume:** OSM road attributes cannot distinguish a quiet dead-end from a busy route. 
     Even though they are not equally dangerous, the model cannot see a difference between those roads and therefore also cannot predict different risk scores.
-        </div>
     """)
     #st.markdown(""" """)
 

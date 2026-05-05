@@ -5,8 +5,6 @@
 
 CycloSafe predicts accident hotspots for cyclists on road segments in Delft (Netherlands) using real Dutch open data.
 
-*to do!! add dashboard model insight screenshot*
-
 ## What I Built
 
 I developed an end-to-end ML pipeline to analyse the risk of bike accidents in Delft. Joining the BRON accidents dataset (2022-2024) with OpenStreetMap road infrastructure data (retrieved via OSMnx), the model predicts the risk of a bike accident happening on a specific road segment. I compared a Logistic Regression baseline with a Random Forest classifier to evaluate performance and analysed how different road infrastructure features correlate with the number of accidents happening. The final results are shown in an interactive Streamlit dashboard with a Pydeck risk map to help visualise high-danger zones and accident locations.
@@ -92,6 +90,8 @@ To give users insight into/ an understanding of the model, I included those plot
   <em>Figure 5: The Feature Importance plot in the "Model Insights" tab of the dashboard.</em>
 </div>
 
+<br>
+
 ![CycloSafe Dashboard Model Insights 2](app/assets/cyclosafe_dashboard_model_insights_2.png)
 <div align="center">
   <em>Figure 6: The SHAP plot in the "Model Insights" tab of the dashboard.</em>
@@ -131,7 +131,30 @@ To fix this, I searched for another dataset that captures the amount of cyclists
 
 I tried to compare a more complex Random Forest Model to a Logistic Regression baseline, but both models perform similarly as the limiting factor is the data, not the model complexity. 
 
-## Future Improvements
+## Limitations & Future Improvements
+
+This project works with real open data which comes with real constraints. Here is what I ran into and what I would fix next.
+
+### Limitations
+
+>**Missing cyclist volume:** OSM road attributes cannot distinguish a quiet dead-end from a busy route. Even though they are not equally dangerous, the model cannot see a difference between those roads and therefore also cannot predict different risk scores.
+
+>**BRON accident underregistration:** Solo cyclist falls and smaller incidents are rarely reported, so the accident counts per segment are a lower bound on the true risk.
+
+>**Spatial limitation:** OSMnx pulled a slightly larger area than Delft city limits. This leads to segments near the boundary maybe having incomplete accident records.
+
+
+To ensure transparency, I included a short section about the limitations of my model in the model insights.
+
+![CycloSafe Dashboard Model Insights 3](app/assets/cyclosafe_dashboard_model_insights_3.png)
+<div align="center">
+  <em>Figure 7: Limitations in the "Model Insights" tab of the dashboard.</em>
+</div>
+
+
+### Future Improvements
+
+Some ideas and next steps for improving the model:
 
 - Number of cyclist per road data as an additional feature
   - I explored NDW FietsData, but only 14 measurement points/ locations were providing meaningful data for Delft. More cyclist counts for the streets of Delft would directly help the low F1 score by giving the model more information to learn from.
