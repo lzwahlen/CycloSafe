@@ -97,7 +97,7 @@ I tried to compare a more complex Random Forest Model to a Logistic Regression b
 
 ## Tech Stack 
 I built this project using a Python-based geospatial and ML stack:
-- Data Processing: OSMnx and GeoPandas for handling the road network graphs and spatial data
+- Data Processing: Pandas, OSMnx and GeoPandas for handling the road network graphs and spatial data
 - Machine Learning: scikit-learn for the Random Forest classifier and Logistic Regression baseline, SHAP for interpreting feature importance
 - Visualisation: Streamlit for the interactive dashboard and Pydeck for high-performance spatial mapping
 
@@ -136,9 +136,9 @@ streamlit run app/app.py
 ## Notes
 
 - Logo: CycloSafe bike logo drawn by me
-- Accident data: Sourced from the BRON database via data.overheid.nl (www.data.overheid.nl)
+- Accident data: Sourced from the BRON database via ([data.overheid.nl](https://data.overheid.nl/))
     - Dataset version: The specific dataset used is the ongevallen_2022_2024 GeoJSON dataset.
-- Road network: Sourced from OpenStreetMap (www.openstreetmap.org)
+- Road network: Sourced from ([OpenStreetMap](https://www.openstreetmap.org/))
     - Implementation: The road network data was pulled using the osmnx Python library for the regions Delft, Rijswijk, Pijnacker-Nootdorp, Midden-Delfland, Den Haag, and Westland.  
 
 
