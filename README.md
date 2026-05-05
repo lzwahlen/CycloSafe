@@ -136,9 +136,9 @@ streamlit run app/app.py
 ## Notes
 
 - Logo: CycloSafe bike logo drawn by me
-- Accident data: Sourced from the BRON database via ([data.overheid.nl](https://data.overheid.nl/))
+- Accident data: Sourced from the BRON database via ([data.overheid.nl] https://data.overheid.nl/)
     - Dataset version: The specific dataset used is the ongevallen_2022_2024 GeoJSON dataset.
-- Road network: Sourced from ([OpenStreetMap](https://www.openstreetmap.org/))
+- Road network: Sourced from ([OpenStreetMap] https://www.openstreetmap.org/)
     - Implementation: The road network data was pulled using the osmnx Python library for the regions Delft, Rijswijk, Pijnacker-Nootdorp, Midden-Delfland, Den Haag, and Westland.  
 
 
