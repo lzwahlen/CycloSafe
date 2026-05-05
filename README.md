@@ -27,7 +27,7 @@ The dashboard is fully interactive, allowing users to filter road segments by ty
 
 ## Key findings
 
-*to do: add general findings and thoughts, add screenshot of model insight of dashboard*
+To evaluate the Random Forest model I used a Feature Importance plot to show which features were the most useful for the learning of the model and an SHAP summary to determine which features pushed the predicted risk towards higher or lower values.
 
 ### Feature Importance 
 
@@ -80,6 +80,9 @@ Roundabout
 > In the SHAP plot junction_roundabout has one red point at -0.45. This shows that roundabouts reduce the predicted risk by a lot. This makes sense because dutch roundabouts separate cyclists from cars which leads to less accidents.
 
 <br>
+
+Overall, these results show the impact of various road characteristics on the rate of accidents and how they influence the prediction of the Random Forest classifier.
+
 
 ## Results
 

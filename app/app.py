@@ -314,6 +314,11 @@ with tab1:
 
 
 with tab2:
+
+    st.markdown("""
+    To evaluate the risk prediction, I used a Feature Importance plot to show which features were the most useful for the learning of the model and an SHAP summary to determine which features pushed the predicted risk towards higher or lower values.
+    """)
+
     col1, col2 = st.columns([3, 2])
 
     with col1:
@@ -321,8 +326,9 @@ with tab2:
 
     with col2:
         st.markdown("""
-        ### Key findings: ...
+        In the plot to the left, each bar shows how much that feature contributed to the model's decision across all Random Forest trees. The values sum up to 1 (e.g. a bar at 0.27 means that feature was responsible for 27% of all splits/ decision points). A taller bar means the model relied on that specific feature more.
         """)
+    
 
     col1, col2 = st.columns([3, 2])
 
@@ -331,14 +337,13 @@ with tab2:
 
     with col2:
         st.markdown("""
-        ### Key findings: ...
+        The SHAP plot to the left explains what the model learned from the data it had. 
+
         """)
 
     st.markdown("""
-    **Summary:** 
-                ...
+    Overall, these results show the impact of various road characteristics on the rate of accidents and how they influence the prediction of the Random Forest classifier.
     """)
-
 
 
 #add shap chart? 
