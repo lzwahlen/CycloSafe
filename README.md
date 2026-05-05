@@ -27,8 +27,12 @@ The dashboard is fully interactive, allowing users to filter road segments by ty
 
 In the following plot, each bar shows how much that feature contributed to the model's decision across all Random Forest trees. The values sum up to 1 (e.g. a bar at 0.27 means that feature was responsible for 27% of all splits/ decision points). A taller bar means the model relied on that specific feature more.
 
-![Feature Importance - Top 15 feature importances](plots/feature_importance.png)
-*Figure 3: The general impact of different features on the models decision.*
+<div align="center">
+  <figure>
+    <img src="plots/feature_importance.png" width="300" alt="Feature Importance - Top 15 feature importances">
+    <figcaption>Figure 3: Feature Importance Plot: The general impact of different features on the models decision.</figcaption>
+  </figure>
+</div>
 
 In total, the plot shows that the model learned something from different features of the data and tries to make decisions based on different factors.
 
@@ -42,8 +46,13 @@ The SHAP plot below explains what the model learned from the data it had.
 For example for cycleways: if the point is red (=1) the segment actually is a cycleway, if the point is blue (=0) the point is not a cycleway
 
 
-![SHAP Summary: Feature Impact on High-Risk Prediction](plots/shap_summary.png)
-*Figure 4: How much different features pushed a specific prediction towards higher or lower risk.*
+<div align="center">
+  <figure>
+    <img src="plots/shap_summary.png" width="300" alt="SHAP Summary: Feature Impact on High-Risk Prediction">
+    <figcaption>Figure 4: SHAP Plot: How much different features pushed a specific prediction towards higher or lower risk.</figcaption>
+  </figure>
+</div>
+
 
 ### Findings
 
@@ -59,7 +68,7 @@ For example for cycleways: if the point is red (=1) the segment actually is a cy
 - Roundabout
     In the SHAP plot junction_roundabout has one red point at -0.45. This shows that roundabouts reduce the predicted risk by a lot. This makes sense because dutch roundabouts separate cyclists from cars which leads to less accidents.
 
-    
+
 ## Results
 
 To evaluate the model I calculated the achieved F1 Score, precision and recall.
