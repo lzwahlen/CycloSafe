@@ -86,14 +86,13 @@ To fix this, I searched for another dataset that captures the amount of cyclists
 
 I tried to compare a more complex Random Forest Model to a Logistic Regression baseline, but both models perform similarly as the limiting factor is the data, not the model complexity. 
 
----
+## Future Improvements
 
- <table>
-  <tr>
-    <td><img src="plots/calibration_Logistic_Regression.png" width="400" /></td>
-    <td><img src="plots/calibration_Random_Forest.png" width="400" /></td>
-  </tr>
-</table>
+- Number of cyclist per road data as an additional feature
+  - I explored NDW FietsData, but only 14 measurement points/ locations were providing meaningful data for Delft. More cyclist counts for the streets of Delft would directly help the low F1 score by giving the model more information to learn from.
+- Intersection-level modelling
+  - Accidents happen more often at intersections than along roads because that is where bikes and cars interact. My current model assigns intersection accidents  to nearby road segments, creating noisy labels. Reframing the problem from road segments to intersections could produce a stronger signal on the same data.
+- Extend to other municipalities 
 
 
 ## Tech Stack 
