@@ -111,6 +111,29 @@ def evaluate_probabilities(model, X_test,name):
     prob = model.predict_proba(X_test)
     return {"name": name, "probabilites": prob}
 
+#Random Forest equivalent of a loss curve
+def eval_tree_convergence(rf, X_train, y_train, X_test, y_test ):
+    #use different amount of trees
+    tree_counts = [10, 25, 50, 100, 150, 200, 300]
+    f1_scores = []
+
+    #sweep over different amounts of trees
+    for n in tree_counts:
+        rf = RandomForestClassifier(n_estimators=n, random_state=42, class_weight="balanced")
+        rf.fit(X_train, y_train)
+        probs = rf.predict_proba(X_test)[:, 1]
+        preds = (probs >= 0.5).astype(int)
+        f1_scores.append(f1_score(y_test, preds, zero_division=0))
+
+    #plot
+    plt.figure(figsize=(8, 4))
+    plt.plot(tree_counts, f1_scores, marker="o")
+    plt.xlabel("Number of trees")
+    plt.ylabel("F1 score")
+    plt.title("F1 score vs number of trees: Random Forest")
+    plt.tight_layout()
+    plt.savefig("../plots/rf_convergence.png", dpi=150)
+    plt.close()
 
 def plot_feature_importance(model, feature_names):
     #bar chart of feature importances, save to models
