@@ -63,7 +63,24 @@ Findings:
 
 ## Results
 
- *to do: add and discuss results*
+| Model | F1 Score | Precision | Recall |
+| :--- | :---: | :---: | :---: |
+| Logistic Regression | 0.025 | 0.013 | 0.599 |
+| Random Forest | 0.027 | 0.014 | 0.552 |
+
+---
+
+
+
+
+
+ <table>
+  <tr>
+    <td><img src="plots/calibration_Logistic_Regression.png" width="400" /></td>
+    <td><img src="plots/calibration_Random_Forest.png" width="400" /></td>
+  </tr>
+</table>
+
 
 ## Tech Stack 
 I built this project using a Python-based geospatial and ML stack:
