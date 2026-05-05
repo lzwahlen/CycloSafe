@@ -36,10 +36,10 @@ In the following plot, each bar shows how much that feature contributed to the m
 ![Feature Importance - Top 15 feature importances](plots/feature_importance.png)
 <div align="center">
   <em>Figure 3: Feature Importance Plot: The general impact of different features on the model's decision.
-  
   </em>
 </div>
 
+<br>
 
 In total, the plot shows that the model learned something from different features of the data and tries to make decisions based on different factors.
 
@@ -47,7 +47,7 @@ In total, the plot shows that the model learned something from different feature
 ### SHAP Summary
 
 The SHAP plot below explains what the model learned from the data it had. 
-- Each point in the plot represents one road semgent.
+- Each point in the plot represents one road segment.
 - The horizontal position of the point determines how strongly the corresponding feature pushed the predicted risk score up (right) or down (left).
 - The point colour shows the segment's actual feature value. 
 For example for cycleways: if the point is red (=1) the segment actually is a cycleway, if the point is blue (=0) the point is not a cycleway
@@ -89,13 +89,12 @@ I did not just use and show the accuracy of the model, because the dataset has 8
 | Logistic Regression | 0.025 | 0.013 | 0.599 |
 | Random Forest | 0.027 | 0.014 | 0.552 |
 
-![SHAP Summary: Feature Impact on High-Risk Prediction](plots/shap_summary.png)
 <div align="center">
   <em>Table 1: The F1 Score, Precision and Recall for the Logistic Regression baseline and the Random Forest classifier.
-  
   </em>
 </div>
 
+<br>
 
 The F1 Score of both models is very low. This indicates that the models are not able to reliably classify road segments as high- or low-risk. 
 
