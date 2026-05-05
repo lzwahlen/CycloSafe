@@ -1,5 +1,5 @@
 import joblib
-from model import load_data
+from model import load_data, evaluate_probabilities
 from sklearn.model_selection import train_test_split
 import shap
 import numpy as np
@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score
+
 
 #load models from disk (s.t. no retraining needed)
 lr = joblib.load("../models/logistic_regression.pkl")
@@ -100,11 +101,7 @@ for q in range(4):
         continue
 
     #train each time a new model
-    rf_spatial = RandomForestClassifier(
-        n_estimators=200,
-        random_state=42,
-        class_weight="balanced"
-    )
+    rf_spatial = RandomForestClassifier(n_estimators=200, random_state=42, class_weight="balanced")
     rf_spatial.fit(X_spatial_train, y_spatial_train)
 
     #evaluate on test quadrant
@@ -120,6 +117,11 @@ mean_spatial_f1 = np.mean(spatial_f1_scores)
 print(f"Mean spatial CV F1:  {mean_spatial_f1:.3f}")
 print(f"Random split F1:     {random_split_f1:.3f}")
 print(f"Performance drop:    {random_split_f1 - mean_spatial_f1:.3f}")
+
+#calibration plot to check if probability scores are actually meaningful
+evaluate_probabilities(rf, X_test,y_test,"Random Forest")
+evaluate_probabilities(lr, X_test,y_test,"Logistic Regression")
+
 
 #save predictions
 #get risk scores for all segments, not just test set (what the dashboard map will use)

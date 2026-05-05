@@ -5,6 +5,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score, precision_score, recall_score
 import ast
+from sklearn.calibration import calibration_curve
+
 
 def clean_highway(val):
     #each road segment has multiple highway tags stored as a list
@@ -105,11 +107,30 @@ def evaluate_model(model, X_test, y_test, name, threshold = 0.5):
 
     return {"name": name, "f1": f1, "precision": precision, "recall": recall}
 
-def evaluate_probabilities(model, X_test,name):
+def evaluate_probabilities(model, X_test,y_test,name):
 
     #predicted class probabilities of model, (for a map of gradients)
     prob = model.predict_proba(X_test)
-    return {"name": name, "probabilites": prob}
+    probs_class1 = prob[:, 1]  #take only class 1 (high risk) probs
+
+    #calibration plot 
+    #a well calibrated model: predicted 0.8 probability = 80% actually high risk
+    fraction_of_positives, mean_predicted_value = calibration_curve(
+        y_test, probs_class1, n_bins=10
+    )
+
+    plt.figure(figsize=(8, 6))
+    plt.plot(mean_predicted_value, fraction_of_positives,
+             marker="o", label=name)
+    plt.plot([0, 1], [0, 1], linestyle="--", color="grey", label="Perfect calibration")
+    plt.xlabel("Mean predicted probability")
+    plt.ylabel("Fraction of actual positives")
+    plt.title(f"Calibration Plot: {name}")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(f"../plots/calibration_{name.replace(' ', '_')}.png", dpi=150)
+    plt.close()
+
 
 #Random Forest equivalent of a loss curve
 def eval_tree_convergence(rf, X_train, y_train, X_test, y_test ):
