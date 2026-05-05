@@ -85,6 +85,19 @@ Roundabout
 
 Overall, these results show the impact of various road characteristics on the rate of accidents and how they influence the prediction of the Random Forest classifier.
 
+To give users insight into/ an understanding of the model, I included those plots into a "Model Insights" tab of the dashboard.
+
+![CycloSafe Dashboard Model Insights 1](app/assets/cyclosafe_dashboard_model_insights_1.png)
+<div align="center">
+  <em>Figure 5: The Feature Importance plot in the "Model Insights" tab of the dashboard.</em>
+</div>
+
+![CycloSafe Dashboard Model Insights 2](app/assets/cyclosafe_dashboard_model_insights_2.png)
+<div align="center">
+  <em>Figure 6: The SHAP plot in the "Model Insights" tab of the dashboard.</em>
+</div>
+
+
 
 ## Results
 
