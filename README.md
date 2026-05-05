@@ -1,5 +1,5 @@
 <h1 style="display: flex; align-items: center;">
-  <img src="app/assets/cyclosafe_logo_bike.png" alt="Logo" width="40" style="margin-right: 15px;">
+  <img src="app/assets/cyclosafe_logo_bike.png" alt="Logo" width="60" style="margin-right: 15px;">
   CycloSafe
 </h1>
 
