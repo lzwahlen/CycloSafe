@@ -13,17 +13,19 @@ I developed an end-to-end ML pipeline to analyse the risk of bike accidents in D
 
 The dashboard is fully interactive, allowing users to filter road segments by type and explore high-risk areas based on a minimum risk score and accident count.
 
-![CycloSafe Dashboard Interface](app/assets/cyclosafe_dashboard.png)
 <div align="center">
-  <em>Figure 1: The dynamic CycloSafe dashboard is designed to help users explore and filter predicted collision risks on the streets of Delft.</em>
+  <figure>
+    <img src="app/assets/cyclosafe_dashboard.png" alt="CycloSafe Dashboard" width="600">
+    <figcaption><em>Figure 1: The dynamic CycloSafe dashboard is designed to help users explore and filter predicted collision risks on the streets of Delft.</em></figcaption>
+  </figure>
 </div>
 
-
-![CycloSafe Map of Actual Accidents](app/assets/cyclosafe_dashboard_accidents.png)
 <div align="center">
-  <em>Figure 2: The CycloSafe Actual Accidents Map shows the collision locations across the road network. Hovering over a specific data point reveals more information on the risk score and the amount of accidents that occured.</em>
+  <figure>
+    <img src="app/assets/cyclosafe_dashboard_accidents.png" alt="CycloSafe Accidents Map" width="600">
+    <figcaption><em>Figure 2: The CycloSafe Actual Accidents Map shows the collision locations across the road network. Hovering over a specific data point reveals more information on the risk score and the amount of accidents that occurred.</em></figcaption>
+  </figure>
 </div>
-
 
 ## Key findings
 
