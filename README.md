@@ -1,7 +1,7 @@
-<img align="left" width="50" src="app/assets/cyclosafe_logo_bike.png" alt="Project Logo">
-
-# CycloSafe
-<br clear="left">
+<h1 style="display: flex; align-items: center;">
+  <img src="app/assets/cyclosafe_logo_bike.png" alt="Logo" width="40" style="margin-right: 15px;">
+  CycloSafe
+</h1>
 
 CycloSafe predicts accident hotspots for cyclists on road segments in Delft (Netherlands) using real Dutch open data.
 
