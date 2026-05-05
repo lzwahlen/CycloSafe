@@ -14,10 +14,16 @@ I developed an end-to-end ML pipeline to analyse the risk of bike accidents in D
 The dashboard is fully interactive, allowing users to filter road segments by type and explore high-risk areas based on a minimum risk score and accident count.
 
 ![CycloSafe Dashboard Interface](app/assets/cyclosafe_dashboard.png)
-*Figure 1: The dynamic CycloSafe dashboard is designed to help users explore and filter predicted collision risks on the streets of Delft.*
+<div align="center">
+  <em>Figure 1: The dynamic CycloSafe dashboard is designed to help users explore and filter predicted collision risks on the streets of Delft.</em>
+</div>
+
 
 ![CycloSafe Map of Actual Accidents](app/assets/cyclosafe_dashboard_accidents.png)
-*Figure 2: The CycloSafe Actual Accidents Map shows the collision locations across the road network. Hovering over a specific data point reveals more information on the risk score and the amount of accidents that occured.*
+<div align="center">
+  <em>Figure 2: The CycloSafe Actual Accidents Map shows the collision locations across the road network. Hovering over a specific data point reveals more information on the risk score and the amount of accidents that occured.</em>
+</div>
+
 
 ## Key findings
 
@@ -27,12 +33,11 @@ The dashboard is fully interactive, allowing users to filter road segments by ty
 
 In the following plot, each bar shows how much that feature contributed to the model's decision across all Random Forest trees. The values sum up to 1 (e.g. a bar at 0.27 means that feature was responsible for 27% of all splits/ decision points). A taller bar means the model relied on that specific feature more.
 
+![Feature Importance - Top 15 feature importances](plots/feature_importance.png)
 <div align="center">
-  <figure>
-    <img src="plots/feature_importance.png" width="300" alt="Feature Importance - Top 15 feature importances">
-    <figcaption>Figure 3: Feature Importance Plot: The general impact of different features on the models decision.</figcaption>
-  </figure>
+  <em>Figure 3: Feature Importance Plot: The general impact of different features on the model's decision.</em>
 </div>
+
 
 In total, the plot shows that the model learned something from different features of the data and tries to make decisions based on different factors.
 
@@ -46,11 +51,9 @@ The SHAP plot below explains what the model learned from the data it had.
 For example for cycleways: if the point is red (=1) the segment actually is a cycleway, if the point is blue (=0) the point is not a cycleway
 
 
+![SHAP Summary: Feature Impact on High-Risk Prediction](plots/shap_summary.png)
 <div align="center">
-  <figure>
-    <img src="plots/shap_summary.png" width="300" alt="SHAP Summary: Feature Impact on High-Risk Prediction">
-    <figcaption>Figure 4: SHAP Plot: How much different features pushed a specific prediction towards higher or lower risk.</figcaption>
-  </figure>
+  <em>Figure 4: SHAP Plot: How much different features pushed a specific prediction towards higher or lower risk.</em>
 </div>
 
 
