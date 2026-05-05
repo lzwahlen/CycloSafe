@@ -61,18 +61,25 @@ For example for cycleways: if the point is red (=1) the segment actually is a cy
 
 ### Findings
 
-- Service roads 
-  - The feature importance plot shows that service roads (access roads, parking aisles, driveways, and back-of-building roads) have the most impact on the model's decision. I would have expected that the maxspeed to be more impactful. From the SHAP plot it becomes visible that service roads reduce the predicted risk for accidents to happen. The reason for this might be that they are low-speed roads where cyclists and (possibly turning) cars drive attentively.
+Service roads 
+> The feature importance plot shows that service roads (access roads, parking aisles, driveways, and back-of-building roads) have the most impact on the model's decision. I would have expected that the maxspeed to be more impactful. From the SHAP plot it becomes visible that service roads reduce the predicted risk for accidents to happen. The reason for this might be that they are low-speed roads where cyclists and (possibly turning) cars drive attentively.
 
-- Cycleways 
-  - This is the most counterintuitive finding. From the SHAP plot it becomes visible that highway_cycleway increases the risk the model is predicting. I would have expected that cycling infrastructure reduces the predicted risk. BRON records the number of accidents, but not the number of cyclists per road segment. So the reason for this finding could be that more cyclists drive on the cycleways and more cyclists means more recorded accidents. Thus infrastructure explicitly designed for bikes appears risky even though it is might be well designed.
+<br>
 
-- Speed
-  -  Maxspeed is the second strongest signal, which makes sense as a higher speed limit causes more frequent and severe accidents. The SHAP summary shows that lower speed pushes the risk towards lower values. The violet color stands for a moderate speed which does not influence the model as much. What stands out is that a higher speed does not necessarily increase the predicted risk, but also does not reduce it. The reason for this could be that roads with higher speed limits also have safer road infrastructure, which is reducing the risk.
+Cycleways 
+> This is the most counterintuitive finding. From the SHAP plot it becomes visible that highway_cycleway increases the risk the model is predicting. I would have expected that cycling infrastructure reduces the predicted risk. BRON records the number of accidents, but not the number of cyclists per road segment. So the reason for this finding could be that more cyclists drive on the cycleways and more cyclists means more recorded accidents. Thus infrastructure explicitly designed for bikes appears risky even though it is might be well designed.
 
-- Roundabout
-  - In the SHAP plot junction_roundabout has one red point at -0.45. This shows that roundabouts reduce the predicted risk by a lot. This makes sense because dutch roundabouts separate cyclists from cars which leads to less accidents.
+<br>
 
+Speed
+> Maxspeed is the second strongest signal, which makes sense as a higher speed limit causes more frequent and severe accidents. The SHAP summary shows that lower speed pushes the risk towards lower values. The violet color stands for a moderate speed which does not influence the model as much. What stands out is that a higher speed does not necessarily increase the predicted risk, but also does not reduce it. The reason for this could be that roads with higher speed limits also have safer road infrastructure, which is reducing the risk.
+
+<br>
+
+Roundabout
+> In the SHAP plot junction_roundabout has one red point at -0.45. This shows that roundabouts reduce the predicted risk by a lot. This makes sense because dutch roundabouts separate cyclists from cars which leads to less accidents.
+
+<br>
 
 ## Results
 
