@@ -5,6 +5,8 @@
 
 CycloSafe predicts accident hotspots for cyclists on road segments in Delft (Netherlands) using real Dutch open data.
 
+*to do!! add dashboard model insight screenshot*
+
 ## What I Built
 
 I developed an end-to-end ML pipeline to analyse the risk of bike accidents in Delft. Joining the BRON accidents dataset (2022-2024) with OpenStreetMap road infrastructure data (retrieved via OSMnx), the model predicts the risk of a bike accident happening on a specific road segment. I compared a Logistic Regression baseline with a Random Forest classifier to evaluate performance and analysed how different road infrastructure features correlate with the number of accidents happening. The final results are shown in an interactive Streamlit dashboard with a Pydeck risk map to help visualise high-danger zones and accident locations.
@@ -41,7 +43,7 @@ In the following plot, each bar shows how much that feature contributed to the m
 
 <br>
 
-In total, the plot shows that the model learned something from different features of the data and tries to make decisions based on different factors.
+In total, the plot shows that the model learned from different features of the data and tries to make decisions based on different factors.
 
 
 ### SHAP Summary

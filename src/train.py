@@ -49,7 +49,6 @@ rf_evals = evaluate_model(rf, X_test, y_test, "Random Forest")
 eval_tree_convergence(rf, X_train_bal, y_train_bal, X_test, y_test)
 
 
-
 #print evaluation, plot it? is fr actually better than lr? 
 print(f"\n{'Model':<25} {'F1':<10} {'Precision':<10} {'Recall':<10}")
 print(f"{lr_evals['name']:<25} {lr_evals['f1']:<10.3f} {lr_evals['precision']:<10.3f} {lr_evals['recall']:<10.3f}")

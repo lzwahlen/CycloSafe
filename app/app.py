@@ -315,34 +315,83 @@ with tab1:
 
 with tab2:
 
-    st.markdown("""
-    To evaluate the risk prediction, I used a Feature Importance plot to show which features were the most useful for the learning of the model and an SHAP summary to determine which features pushed the predicted risk towards higher or lower values.
-    """)
+    st.subheader("What did the model learn?") #show feature importance and shap plot for model insight
+
+    #feature importance
+    st.markdown("#### Feature importance")
+    st.caption("How much each feature influenced the model's decisions across all trees.")
 
     col1, col2 = st.columns([3, 2])
 
     with col1:
-        st.image("plots/feature_importance.png", caption="Top 15 feature importances", width= 600)
+        st.image("plots/feature_importance.png", caption="Feature Importance Plot", width= 600)
 
     with col2:
         st.markdown("""
-        In the plot to the left, each bar shows how much that feature contributed to the model's decision across all Random Forest trees. The values sum up to 1 (e.g. a bar at 0.27 means that feature was responsible for 27% of all splits/ decision points). A taller bar means the model relied on that specific feature more.
+        Each bar represents the how much the specific feature was used to split the data across all decision points in the Random Forest. 
+        All these values add up to 1.
+                    
+        **Key findings:**
+        - `highway_service` (27%) is the strongest predictor 
+        - `maxspeed` (16%) confirms the model learned physically plausible signals
+        - `highway_cycleway` (7.5%) suggests cycle infrastructure is meaningful 
+
+        Note: importance only tells you *how much* a feature mattered, not whether it pushed the risk up or down.
         """)
     
 
+    #shap summary
+    st.markdown("#### SHAP Plot")
+    st.caption("How each feature pushed the individual predictions towards a higher or lower risk than the average risk score.")
+
     col1, col2 = st.columns([3, 2])
 
     with col1:
-        st.image("plots/shap_summary.png", caption="SHAP summary: feature impact on predicted risk", width= 600)
+        st.image("plots/shap_summary.png", caption="SHAP Plot", width= 600)
 
     with col2:
         st.markdown("""
-        The SHAP plot to the left explains what the model learned from the data it had. 
-
+        Each point represents a road segment. 
+        Its position on the x-axis shows how much the feature pushed the risk score up (positive) or down (negative).
+        """)
+        st.markdown("""
+        The colour of the point shows the feature value (**red = high value**, **blue = low value**)""")
+        st.markdown("""     
+        **For example:** A blue point for `maxspeed` on the negative side means a low speed limit pushed that segment towards a lower risk.
+        """)
+        st.markdown("""""")
+        st.markdown("""
+        **Key Findings:**
+        - Cycleways increase the predicted risk.
+        - Roundabouts and service roads push the predicted risk towards lower values
+        - A lower maximum speed decreases the predicted risk.
+                
         """)
 
+    #add limitations to the app to show what model can and cannot do
+    st.markdown("#### Limitations")
+
+    #limitation 1: missing cyclist volume
+    #st.markdown("""**Missing cyclist volume**""")
     st.markdown("""
-    Overall, these results show the impact of various road characteristics on the rate of accidents and how they influence the prediction of the Random Forest classifier.
+    >**Missing cyclist volume:** OSM road attributes cannot distinguish a quiet dead-end from a busy route. 
+    Even though they are not equally dangerous, the model cannot see a difference between those roads and therefore also cannot predict different risk scores.
+        </div>
+    """)
+    #st.markdown(""" """)
+
+    #limitation 2: BRON accident underregistration
+    #st.markdown("""**BRON accident underregistration**""")
+    st.markdown("""
+    >**BRON accident underregistration**: Solo cyclist falls and smaller incidents are rarely reported, so the accident counts per segment are a lower bound on the true risk.
+    """)
+    #st.markdown(""" """)
+
+    #limitation 3: Spatial limitation
+    #st.markdown("""**Spatial limitation**""")
+    st.markdown("""
+    >**Spatial limitation**: OSMnx pulled a slightly larger area than Delft city limits. 
+    This leads to segments near the boundary maybe having incomplete accident records.
     """)
 
 
