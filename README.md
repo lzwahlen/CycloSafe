@@ -35,7 +35,9 @@ In the following plot, each bar shows how much that feature contributed to the m
 
 ![Feature Importance - Top 15 feature importances](plots/feature_importance.png)
 <div align="center">
-  <em>Figure 3: Feature Importance Plot: The general impact of different features on the model's decision.</em>
+  <em>Figure 3: Feature Importance Plot: The general impact of different features on the model's decision.
+  
+  </em>
 </div>
 
 
@@ -86,7 +88,14 @@ I did not just use and show the accuracy of the model, because the dataset has 8
 | :--- | :---: | :---: | :---: |
 | Logistic Regression | 0.025 | 0.013 | 0.599 |
 | Random Forest | 0.027 | 0.014 | 0.552 |
-*Table 1: The F1 Score, Precision and Recall for the Logistic Regression baseline and the Random Forest classifier.*
+
+![SHAP Summary: Feature Impact on High-Risk Prediction](plots/shap_summary.png)
+<div align="center">
+  <em>Table 1: The F1 Score, Precision and Recall for the Logistic Regression baseline and the Random Forest classifier.
+  
+  </em>
+</div>
+
 
 The F1 Score of both models is very low. This indicates that the models are not able to reliably classify road segments as high- or low-risk. 
 
