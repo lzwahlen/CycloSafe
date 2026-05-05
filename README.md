@@ -18,11 +18,14 @@ The dashboard is fully interactive, allowing users to filter road segments by ty
   <em>Figure 1: The dynamic CycloSafe dashboard is designed to help users explore and filter predicted collision risks on the streets of Delft.</em>
 </div>
 
+<br>
 
 ![CycloSafe Map of Actual Accidents](app/assets/cyclosafe_dashboard_accidents.png)
 <div align="center">
   <em>Figure 2: The CycloSafe Actual Accidents Map shows the collision locations across the road network. Hovering over a specific data point reveals more information on the risk score and the amount of accidents that occured.</em>
 </div>
+
+<br>
 
 
 ## Key findings
@@ -31,7 +34,7 @@ To evaluate the Random Forest model I used a Feature Importance plot to show whi
 
 ### Feature Importance 
 
-In the following plot, each bar shows how much that feature contributed to the model's decision across all Random Forest trees. The values sum up to 1 (e.g. a bar at 0.27 means that feature was responsible for 27% of all splits/ decision points). A taller bar means the model relied on that specific feature more.
+In the following plot, each bar shows how much a specific feature contributed to the model's decision across all Random Forest trees. The values sum up to 1 (e.g. a bar at 0.27 means that feature was responsible for 27% of all splits/ decision points). A taller bar means the model relied on that specific feature more.
 
 ![Feature Importance - Top 15 feature importances](plots/feature_importance.png)
 <div align="center">
@@ -61,27 +64,26 @@ For example for cycleways: if the point is red (=1) the segment actually is a cy
 
 ### Findings
 
-Service roads 
-> The feature importance plot shows that service roads (access roads, parking aisles, driveways, and back-of-building roads) have the most impact on the model's decision. I would have expected that the maxspeed to be more impactful. From the SHAP plot it becomes visible that service roads reduce the predicted risk for accidents to happen. The reason for this might be that they are low-speed roads where cyclists and (possibly turning) cars drive attentively.
+> **Service roads:** The feature importance plot shows that service roads (access roads, parking aisles, driveways, and back-of-building roads) have the most impact on the model's decision. I would have expected that the maxspeed to be more impactful. From the SHAP plot it becomes visible that service roads reduce the predicted risk for accidents to happen. The reason for this might be that they are low-speed roads where cyclists and (possibly turning) cars drive attentively.
 
 <br>
 
 Cycleways 
-> This is the most counterintuitive finding. From the SHAP plot it becomes visible that highway_cycleway increases the risk the model is predicting. I would have expected that cycling infrastructure reduces the predicted risk. BRON records the number of accidents, but not the number of cyclists per road segment. So the reason for this finding could be that more cyclists drive on the cycleways and more cyclists means more recorded accidents. Thus infrastructure explicitly designed for bikes appears risky even though it is might be well designed.
+> **Cycleways:** This is the most counterintuitive finding. From the SHAP plot it becomes visible that highway_cycleway increases the risk the model is predicting. I would have expected that cycling infrastructure reduces the predicted risk. BRON records the number of accidents, but not the number of cyclists per road segment. So the reason for this finding could be that more cyclists drive on the cycleways and more cyclists means more recorded accidents. Thus infrastructure explicitly designed for bikes appears risky even though it is might be well designed.
 
 <br>
 
-Speed
-> Maxspeed is the second strongest signal, which makes sense as a higher speed limit causes more frequent and severe accidents. The SHAP summary shows that lower speed pushes the risk towards lower values. The violet color stands for a moderate speed which does not influence the model as much. What stands out is that a higher speed does not necessarily increase the predicted risk, but also does not reduce it. The reason for this could be that roads with higher speed limits also have safer road infrastructure, which is reducing the risk.
+> **Speed:** Maxspeed is the second strongest signal, which makes sense as a higher speed limit causes more frequent and severe accidents. The SHAP summary shows that lower speed pushes the risk towards lower values. The violet color stands for a moderate speed which does not influence the model as much. What stands out is that a higher speed does not necessarily increase the predicted risk, but also does not reduce it. The reason for this could be that roads with higher speed limits also have safer road infrastructure, which is reducing the risk.
 
 <br>
 
-Roundabout
-> In the SHAP plot junction_roundabout has one red point at -0.45. This shows that roundabouts reduce the predicted risk by a lot. This makes sense because dutch roundabouts separate cyclists from cars which leads to less accidents.
+> **Roundabout:** In the SHAP plot junction_roundabout has one red point at -0.45. This shows that roundabouts reduce the predicted risk by a lot. This makes sense because dutch roundabouts separate cyclists from cars which leads to less accidents.
 
 <br>
 
 Overall, these results show the impact of various road characteristics on the rate of accidents and how they influence the prediction of the Random Forest classifier.
+
+<br>
 
 To give users insight into/ an understanding of the model, I included those plots into a "Model Insights" tab of the dashboard.
 
@@ -130,6 +132,9 @@ For example, two roads of the same type can have different cycling traffic: one 
 To fix this, I searched for another dataset that captures the amount of cyclists on the roads of Delft. However, the dataset I found (NDW FietsData) only contained data for max. 14 locations in Delft for the year 2024 (for previous years I found even less data points on the website). This is not enough, most roads would get the median fallback value. This makes the feature not useful enough for training, which is why I didn't include it in the final pipeline of the model.
 
 I tried to compare a more complex Random Forest Model to a Logistic Regression baseline, but both models perform similarly as the limiting factor is the data, not the model complexity. 
+
+Even though the F1 score is low, I still used the Feature Importance and the SHAP plot to evaluate the model. This is fine because they are methods that focus on what features the model learned from and how it uses those features for the risk prediction, rather than focusing on the accuracy.
+
 
 ## Limitations & Future Improvements
 
