@@ -44,8 +44,8 @@ threshold = roads_accident.quantile(0.75)
 
 #more aggressive high-risk: any segment with 1 or more accidents is high risk
 road_segments["high_risk"] = (road_segments["accident_count"] >= 1).astype(int)
-print(road_segments["high_risk"].sum())
-print(road_segments["high_risk"].mean())
+#print(road_segments["high_risk"].sum())
+#print(road_segments["high_risk"].mean())
 
 #threshold = 1, a segment needs min. two accidents to be considered high risk
 #print(f"threshold (75th percentile): {threshold}") 

@@ -46,7 +46,7 @@ lr_evals = evaluate_model(lr, X_test, y_test, "Logistic Regression")
 rf_evals = evaluate_model(rf, X_test, y_test, "Random Forest")
 
 #test performance with different amount of trees
-eval_tree_convergence(rf, X_train_bal, y_train_bal, X_test, y_test )
+eval_tree_convergence(rf, X_train_bal, y_train_bal, X_test, y_test)
 
 
 
