@@ -97,6 +97,10 @@ To give users insight into how the model came to its conclusions and help with a
   <em>Figure 6: SHAP Plot In "Model Insights" Of The Dashboard.</em>
 </div>
 
+<br>
+<br>
+
+In total, even though the F1 score is low (as seen below), I used the Feature Importance and the SHAP plot to evaluate the model. This is fine because they are methods that focus on what features the model learned from and how it uses those features for the risk prediction, rather than focusing on the accuracy.
 
 ## Results
 
@@ -153,12 +157,8 @@ As seen in the table, the F1 Score is highest for the threshols 0.5 or 0.6 (0.5 
 
 <br>
 
-I tried to compare a more complex Random Forest Model to a Logistic Regression baseline, but both models perform similarly as the limiting factor is the data, not the model complexity. 
+I also tried to compare a more complex Random Forest Model to a Logistic Regression baseline, but both models perform similarly as the limiting factor is the data, not the model complexity. 
 
-<br>
-<br>
-
-Even though the F1 score is low, I still used the Feature Importance and the SHAP plot to evaluate the model. This is fine because they are methods that focus on what features the model learned from and how it uses those features for the risk prediction, rather than focusing on the accuracy.
 
 
 ## Limitations & Future Improvements
