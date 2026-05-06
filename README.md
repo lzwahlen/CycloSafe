@@ -15,7 +15,7 @@ The dashboard is fully interactive, allowing users to filter road segments by ty
 
 ![CycloSafe Dashboard Interface](app/assets/cyclosafe_dashboard.png)
 <div align="center">
-  <em>Figure 1: The dynamic CycloSafe dashboard, designed to help users explore and filter predicted collision risks on the streets of Delft.</em>
+  <em>Figure 1: The Dynamic CycloSafe Dashboard, designed to help users explore and filter predicted collision risks on the streets of Delft.</em>
 </div>
 
 <br>
@@ -86,7 +86,7 @@ To give users insight into how the model came to its conclusions and help with a
 
 ![CycloSafe Dashboard Model Insights 1](app/assets/cyclosafe_dashboard_model_insights_1.png)
 <div align="center">
-  <em>Figure 5: The Feature Importance plot in the "Model Insights" tab of the dashboard.</em>
+  <em>Figure 5: Feature Importance In "Model Insights" Of The Dashboard.</em>
 </div>
 
 <br>
@@ -94,7 +94,7 @@ To give users insight into how the model came to its conclusions and help with a
 
 ![CycloSafe Dashboard Model Insights 2](app/assets/cyclosafe_dashboard_model_insights_2.png)
 <div align="center">
-  <em>Figure 6: The SHAP plot in the "Model Insights" tab of the dashboard.</em>
+  <em>Figure 6: SHAP Plot In "Model Insights" Of The Dashboard.</em>
 </div>
 
 
@@ -108,13 +108,11 @@ To evaluate the model, I calculated the achieved F1 Score, precision and recall.
 
 I did not just use and show the accuracy of the model, because the dataset has 858 high risk segments out of 116625. A model that classifies every segment as low-risk would get a very high accuracy (over 99%), but would in reality be completely useless. 
 
-| Model | F1 Score | Precision | Recall |
-| :--- | :---: | :---: | :---: |
-| Logistic Regression | 0.025 | 0.013 | 0.599 |
-| Random Forest | 0.027 | 0.014 | 0.552 |
-
+<p align="center">
+  <img src="plots/f1_precision_recall.png" alt="F1 Score, Precision and Recall" width="400">
+</p>
 <div align="center">
-  <em>Table 1: The F1 Score, Precision and Recall for the Logistic Regression baseline and the Random Forest classifier.
+  <em>Table 1: F1 Score, Precision And Recall For Both Models
   </em>
 </div>
 
@@ -135,17 +133,11 @@ Additionally, only 858 segments out of 116625 are actually high-risk segments wh
 
 The threshold determines at which predicted probability the model flags a road segment as high-risk. A lower threshold means the model makes its decisions more aggressively, while a higher threshold means it is more conservative and only marks very dangerous segments as risky. With a threshold sweep on the validation set, I evaluated different thresholds to find which one improves the performance of the model the most. 
 
-| Threshold | F1 Score | Precision | Recall |
-| :--- | :---: | :---: | :---: |
-| 0.3 | 0.019 | 0.009 | 0.924 |
-| 0.4 | 0.020 | 0.010 | 0.866 |
-| 0.5 | 0.027 | 0.014 | 0.552 |
-| 0.6 | 0.027 | 0.014 | 0.541 |
-| 0.7 | 0.026 | 0.024 | 0.029 |
-| 0.8 | 0.000| 0.000 | 0.000 |
-
+<p align="center">
+  <img src="plots/threshold_sweep_on_validation_set.png" alt="Threshold Sweep On The Validation Set" width="400">
+</p>
 <div align="center">
-  <em>Table 2: Threshold Sweep On The Validation Set.
+  <em>Table 2: Threshold Sweep On The Validation Set
   </em>
 </div>
 
