@@ -66,21 +66,21 @@ For example for cycleways: if the point is red (=1) the segment actually is a cy
 
 ### Findings
 
-> **Service roads:** The feature importance plot shows that service roads (access roads, parking aisles, driveways, and back-of-building roads) have the highest impact on the model's decision. I would have expected that the maxspeed to be more impactful. From the SHAP plot it becomes visible that service roads reduce the predicted risk for accidents to happen. The reason for this might be that they are low-speed roads where cyclists and (possibly turning) cars drive attentively.
+> **Cycleways:** This is a counterintuitive finding. From the SHAP plot it becomes visible that highway_cycleway increases the risk the model is predicting. I would have expected the dedicated cycling infrastructure to push the predicted risk towards lower values. BRON records the number of accidents, but not the number of cyclists per road segment. So the reason for this finding could be, that a very large amount of cyclists are driving on the cycleways. More cyclists means more accidents occur and are recorded. Thus, infrastructure explicitly designed for bikes appears to be risky for the model as many accidents happen, but the large number of accidents is just a consequence of the huge cyclist amount.
 
-> **Cycleways:** This is the most counterintuitive finding. From the SHAP plot it becomes visible that highway_cycleway increases the risk the model is predicting. I would have expected that cycling infrastructure reduces the predicted risk. BRON records the number of accidents, but not the number of cyclists per road segment. So the reason for this finding could be that more cyclists drive on the cycleways and more cyclists means more recorded accidents. Thus infrastructure explicitly designed for bikes appears risky even though it is might be well designed.
+> **Speed:** Maxspeed is the second strongest signal, which makes sense as a higher speed limit causes more frequent and severe accidents. The SHAP summary shows that lower speed pushes the risk towards lower values. The violet color stands for a moderate speed which does not influence the model as much. What stands out is, that a higher speed limit does not necessarily increase the predicted risk, but also does not reduce it. The reason for this could be that roads with higher speed limits also have safer road infrastructure, which is keeps the risk from increasing above average.
 
-> **Speed:** Maxspeed is the second strongest signal, which makes sense as a higher speed limit causes more frequent and severe accidents. The SHAP summary shows that lower speed pushes the risk towards lower values. The violet color stands for a moderate speed which does not inflßence the model as much. What stands out is that a higher speed does not necessarily increase the predicted risk, but also does not reduce it. The reason for this could be that roads with higher speed limits also have safer road infrastructure, which is reducing the risk.
+> **Service roads:** The feature importance plot shows that service roads (access roads, parking aisles, driveways, and back-of-building roads) have the highest impact on the model's decision. I would have assumed the maxspeed to be more impactful. From the SHAP plot it becomes visible that service roads reduce the predicted risk for accidents to happen. The reason for this might be, that they are low-speed roads where cyclists and (possibly turning) cars drive attentively and carefully.
 
 > **Roundabout:** In the SHAP plot junction_roundabout has one red point at -0.45. This shows that roundabouts reduce the predicted risk by a lot. This makes sense because dutch roundabouts separate cyclists from cars which leads to less accidents.
 
 <br>
 
-Overall, these results show the impact of various road characteristics on the rate of accidents and how they influence the prediction of the Random Forest classifier.
+Overall, these results show how various road characteristics, e.g. cycleways or other road types, a maximum speed limit and street infrastructure, impact the accident rate on different road segments and give insight into how they influence the risk prediction (e.g. pushing the risk up or down) of the Random Forest classifier.
 
 <br>
 
-To give users insight into/ an understanding of the model, I included those plots into a "Model Insights" tab of the dashboard.
+To give users insight into how the model came to its conclusions and help with an understanding of the model's work, I included those plots into a "Model Insights" tab of the dashboard.
 
 ![CycloSafe Dashboard Model Insights 1](app/assets/cyclosafe_dashboard_model_insights_1.png)
 <div align="center">
