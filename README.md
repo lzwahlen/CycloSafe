@@ -171,7 +171,7 @@ Some ideas and next steps for improving the model:
 I built this project using a Python-based geospatial and ML stack:
 - Data Processing: Pandas, OSMnx and GeoPandas for handling the road network graphs and spatial data
 - Machine Learning: scikit-learn for the Random Forest classifier and Logistic Regression baseline, SHAP for interpreting feature importance
-- Visualisation: Streamlit for the interactive dashboard and Pydeck for high-performance spatial mapping
+- Visualisation: Matplotlib for creating the plots, Streamlit for the interactive dashboard and Pydeck for high-performance spatial mapping
 
 ## Setup:
 Prerequisites:
@@ -205,7 +205,7 @@ streamlit run app/app.py
 ```
 
 
-## Notes
+## Sources
 
 - Logo: CycloSafe bike logo drawn by me
 - Accident data: Sourced from the BRON database via ([data.overheid.nl](https://data.overheid.nl/))
