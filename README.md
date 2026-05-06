@@ -120,6 +120,8 @@ I did not just use and show the accuracy of the model, because the dataset has 8
 
 The F1 Score of both models is very low. This indicates that the models are not able to reliably classify road segments as high- or low-risk. 
 
+<br>
+
 As seen in the feature importance and SHAP plot, the model assigns a risk score based on different attributes of the road segments such as road features and maxspeed. These current features (for example the road type) are weak proxies for the actual risk. 
 
 For example, two roads of the same type can have different cycling traffic: one could be a quiet road behind a supermarket and another one could be on a busy lane, used by hundreds of cyclists daily. For the model they would look almost identical, which makes it hard to predict different risks for the two roads.
@@ -128,10 +130,15 @@ To fix this, I searched for another dataset that captures the amount of cyclists
 
 However, the dataset I found (NDW FietsData) only contained data for max. 14 locations in Delft for the year 2024 (for previous years I found even less data points on the website). This is not enough as most roads would get the median fallback value. This makes the feature not useful enough for training, which is why I didn't include it in the final pipeline of the model.
 
+<br>
+
 Additionally, only 858 segments out of 116625 are actually high-risk segments which leads to a severe class imbalance. As an attempt to solve this problem, I introduced a class=balanced parameter to the models and undersampled the majority class before training. For the training, I took 15000 randomly sampled negatives and all positives instead of the full dataset. While this helped improving performance, it did not solve the problem completely which is why the model still has a low F1 score.
 
+<br>
 
 The threshold determines at which predicted probability the model flags a road segment as high-risk. A lower threshold means the model makes its decisions more aggressively, while a higher threshold means it is more conservative and only marks very dangerous segments as risky. With a threshold sweep on the validation set, I evaluated different thresholds to find which one improves the performance of the model the most. 
+
+<br>
 
 <p align="center">
   <img src="plots/threshold_sweep_on_validation_set.png" alt="Threshold Sweep On The Validation Set" width="400">
@@ -147,6 +154,9 @@ As seen in the table, the F1 Score is highest for the threshols 0.5 or 0.6 (0.5 
 <br>
 
 I tried to compare a more complex Random Forest Model to a Logistic Regression baseline, but both models perform similarly as the limiting factor is the data, not the model complexity. 
+
+<br>
+<br>
 
 Even though the F1 score is low, I still used the Feature Importance and the SHAP plot to evaluate the model. This is fine because they are methods that focus on what features the model learned from and how it uses those features for the risk prediction, rather than focusing on the accuracy.
 
