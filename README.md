@@ -76,7 +76,7 @@ For example for cycleways: if the point is red (=1) the segment actually is a cy
 
 <br>
 
-Overall, these results show how various road characteristics, e.g. cycleways or other road types, a maximum speed limit and street infrastructure, impact the accident rate on different road segments and give insight into how they influence the risk prediction (e.g. pushing the risk up or down) of the Random Forest classifier.
+Overall, these results show how various road characteristics (e.g. cycleways or other road types, a maximum speed limit and street infrastructure) impact the accident rate on different road segments and give insight into how they influence the risk prediction (e.g. pushing the risk up or down) of the Random Forest classifier.
 
 <br>
 
@@ -96,10 +96,9 @@ To give users insight into how the model came to its conclusions and help with a
 </div>
 
 
-
 ## Results
 
-To evaluate the model I calculated the achieved F1 Score, precision and recall.
+To evaluate the model, I calculated the achieved F1 Score, precision and recall.
 
 - Precision: of all the segments that were predicted as high-risk, how many actually were?
 - Recall: of all the segments that were actually high-risk, how many were found by the model?
@@ -121,11 +120,13 @@ I did not just use and show the accuracy of the model, because the dataset has 8
 
 The F1 Score of both models is very low. This indicates that the models are not able to reliably classify road segments as high- or low-risk. 
 
-As seen in the feature importance, the model assigns a risk score based on different attributes of the road segments such as road features and maxspeed. These current features (for example the road type) are weak proxies for the actual risk. 
+As seen in the feature importance and SHAP plot, the model assigns a risk score based on different attributes of the road segments such as road features and maxspeed. These current features (for example the road type) are weak proxies for the actual risk. 
 
 For example, two roads of the same type can have different cycling traffic: one could be a quiet road behind a supermarket and another one could be on a busy lane, used by hundreds of cyclists daily. For the model they would look almost identical, which makes it hard to predict different risks for the two roads.
 
-To fix this, I searched for another dataset that captures the amount of cyclists on the roads of Delft. However, the dataset I found (NDW FietsData) only contained data for max. 14 locations in Delft for the year 2024 (for previous years I found even less data points on the website). This is not enough, most roads would get the median fallback value. This makes the feature not useful enough for training, which is why I didn't include it in the final pipeline of the model.
+To fix this, I searched for another dataset that captures the amount of cyclists on the roads of Delft. Adding data on the amount of cyclists per road segment could help the problem as the model could learn to distinguish simply busy roads from actually dangerous roads.
+
+ However, the dataset I found (NDW FietsData) only contained data for max. 14 locations in Delft for the year 2024 (for previous years I found even less data points on the website). This is not enough as most roads would get the median fallback value. This makes the feature not useful enough for training, which is why I didn't include it in the final pipeline of the model.
 
 I tried to compare a more complex Random Forest Model to a Logistic Regression baseline, but both models perform similarly as the limiting factor is the data, not the model complexity. 
 
@@ -138,11 +139,11 @@ This project works with real open data which comes with real constraints. Here i
 
 ### Limitations
 
->**Missing cyclist volume:** OSM road attributes cannot distinguish a quiet dead-end from a busy route. Even though they are not equally dangerous, the model cannot see a difference between those roads and therefore also cannot predict different risk scores.
+>**Missing cyclist volume:** OSM road attributes cannot distinguish a quiet dead-end from a busy route. Even though they are not equally dangerous, the model cannot see a difference between busy and dangerous roads and therefore also cannot predict different risk scores for such road segments.
 
->**BRON accident underregistration:** Solo cyclist falls and smaller incidents are rarely reported, so the accident counts per segment are a lower bound on the true risk.
+>**BRON accident underregistration:** Solo cyclist falls and smaller incidents are rarely reported, so the accident counts per segment are less than the actual accidents that happened. Therefore, the calculated risk score is a lower bound on the true risk.
 
->**Spatial limitation:** OSMnx pulled a slightly larger area than Delft city limits. This leads to segments near the boundary maybe having incomplete accident records.
+>**Spatial limitation:** OSMnx pulled a slightly larger area than the Delft city limits. This leads to segments near the boundary maybe having incomplete accident records.
 
 
 To ensure transparency, I included a short section about the limitations of my model in the model insights.
@@ -158,9 +159,9 @@ To ensure transparency, I included a short section about the limitations of my m
 Some ideas and next steps for improving the model:
 
 - Number of cyclist per road data as an additional feature
-  - I explored NDW FietsData, but only 14 measurement points/ locations were providing meaningful data for Delft. More cyclist counts for the streets of Delft would directly help the low F1 score by giving the model more information to learn from.
+  - I explored NDW FietsData, but only 14 measurement points/ locations were providing meaningful data for Delft. To find and include more data on the cyclist counts for the streets of Delft would directly help the low F1 score by giving the model more information to learn from.
 - Intersection-level modelling
-  - Accidents happen more often at intersections than along roads because that is where bikes and cars interact. My current model assigns intersection accidents  to nearby road segments, creating noisy labels. Reframing the problem from road segments to intersections could produce a stronger signal on the same data.
+  - Accidents happen more often at intersections than along roads because that is where bikes and cars interact. My current model assigns intersection accidents to nearby road segments, creating noisy labels. Reframing the problem from road segments to intersections could produce a stronger signal on the same data.
 - Extend to other municipalities 
 
 
