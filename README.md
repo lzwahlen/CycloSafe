@@ -108,10 +108,13 @@ To evaluate the model, I calculated the achieved F1 Score, precision and recall.
 
 I did not just use and show the accuracy of the model, because the dataset has 858 high risk segments out of 116625. A model that classifies every segment as low-risk would get a very high accuracy (over 99%), but would in reality be completely useless. 
 
+<div align="center">
 | Model | F1 Score | Precision | Recall |
 | :--- | :---: | :---: | :---: |
 | Logistic Regression | 0.025 | 0.013 | 0.599 |
 | Random Forest | 0.027 | 0.014 | 0.552 |
+</div>
+
 
 <div align="center">
   <em>Table 1: The F1 Score, Precision and Recall for the Logistic Regression baseline and the Random Forest classifier.
@@ -135,6 +138,7 @@ Additionally, only 858 segments out of 116625 are actually high-risk segments wh
 
 The threshold determines at which predicted probability the model flags a road segment as high-risk. A lower threshold means the model makes its decisions more aggressively, while a higher threshold means it is more conservative and only marks very dangerous segments as risky. With a threshold sweep on the validation set, I evaluated different thresholds to find which one improves the performance of the model the most. 
 
+<div align="center">
 | Threshold | F1 Score | Precision | Recall |
 | :--- | :---: | :---: | :---: |
 | 0.3 | 0.019 | 0.009 | 0.924 |
@@ -143,6 +147,7 @@ The threshold determines at which predicted probability the model flags a road s
 | 0.6 | 0.027 | 0.014 | 0.541 |
 | 0.7 | 0.026 | 0.024 | 0.029 |
 | 0.8 | 0.000| 0.000 | 0.000 |
+</div>
 
 <div align="center">
   <em>Table 2: Threshold Sweep On The Validation Set.
