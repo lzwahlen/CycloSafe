@@ -14,8 +14,10 @@ lr = joblib.load("../models/logistic_regression.pkl")
 rf = joblib.load("../models/random_forest.pkl")
 
 X, y = load_data()
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42
-)
+#recreate data split: 80/10/10 train/validation/test 
+X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
+X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, stratify=y_temp, random_state=42)
+
 
 #use SHAP explainer for Random Forest
 #for each segment and each feature their SHAP value = contribution of that feature to pushing the prediction away from the average prediction

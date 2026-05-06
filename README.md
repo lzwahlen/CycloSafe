@@ -128,7 +128,31 @@ For example, two roads of the same type can have different cycling traffic: one 
 
 To fix this, I searched for another dataset that captures the amount of cyclists on the roads of Delft. Adding data on the amount of cyclists per road segment could help the problem as the model could learn to distinguish simply busy roads from actually dangerous roads.
 
- However, the dataset I found (NDW FietsData) only contained data for max. 14 locations in Delft for the year 2024 (for previous years I found even less data points on the website). This is not enough as most roads would get the median fallback value. This makes the feature not useful enough for training, which is why I didn't include it in the final pipeline of the model.
+However, the dataset I found (NDW FietsData) only contained data for max. 14 locations in Delft for the year 2024 (for previous years I found even less data points on the website). This is not enough as most roads would get the median fallback value. This makes the feature not useful enough for training, which is why I didn't include it in the final pipeline of the model.
+
+Additionally, only 858 segments out of 116625 are actually high-risk segments which leads to a severe class imbalance. As an attempt to solve this problem, I introduced a class=balanced parameter to the models and undersampled the majority class before training. For the training, I took 15000 randomly sampled negatives and all positives instead of the full dataset. While this helped improving performance, it did not solve the problem completely which is why the model still has a low F1 score.
+
+
+The threshold determines at which predicted probability the model flags a road segment as high-risk. A lower threshold means the model makes its decisions more aggressively, while a higher threshold means it is more conservative and only marks very dangerous segments as risky. With a threshold sweep on the validation set, I evaluated different thresholds to find which one improves the performance of the model the most. 
+
+| Threshold | F1 Score | Precision | Recall |
+| :--- | :---: | :---: | :---: |
+| 0.3 | 0.019 | 0.009 | 0.924 |
+| 0.4 | 0.020 | 0.010 | 0.866 |
+| 0.5 | 0.027 | 0.014 | 0.552 |
+| 0.6 | 0.027 | 0.014 | 0.541 |
+| 0.7 | 0.026 | 0.024 | 0.029 |
+| 0.8 | 0.000| 0.000 | 0.000 |
+
+<div align="center">
+  <em>Table 2: Threshold Sweep On The Validation Set.
+  </em>
+</div>
+
+<br>
+As seen in the table, the F1 Score is highest for the threshols 0.5 or 0.6 (0.5 is the default value). No other threshold meaningfully improves the performance of my model, which confirms that the issue is missing features rather than a tuning problem.
+
+<br>
 
 I tried to compare a more complex Random Forest Model to a Logistic Regression baseline, but both models perform similarly as the limiting factor is the data, not the model complexity. 
 
