@@ -143,7 +143,6 @@ The threshold determines at which predicted probability the model flags a road s
 
 <br>
 
-
 <p align="center">
   <img src="plots/threshold_sweep_on_validation_set.png" alt="Threshold Sweep On The Validation Set" width="400">
 </p>
