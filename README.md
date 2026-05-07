@@ -143,22 +143,6 @@ The threshold determines at which predicted probability the model flags a road s
 
 <br>
 
-| **Model** | **F1-Score** | **Precision** | **Recall** |
-| :--- | :---: | :---: | :---: |
-| **Logistic Regression** | 0.024 | 0.012 | 0.547 |
-| **Random Forest** | 0.026 | 0.013 | 0.535 |
-
-
-| **Threshold** | **F1-Score** | **Precision** | **Recall** |
-| :--- | :---: | :---: | :---: |
-| **0.3** | 0.020 | 0.010 | 0.977 |
-| **0.4** | 0.020 | 0.010 | 0.895 |
-| **0.5** | 0.028 | 0.014 | 0.570 |
-| **0.6** | 0.028 | 0.014 | 0.558 |
-| **0.7** | 0.020 | 0.018 | 0.023 |
-| **0.8** | 0.000 | 0.000 | 0.000 |
-
-
 
 <p align="center">
   <img src="plots/threshold_sweep_on_validation_set.png" alt="Threshold Sweep On The Validation Set" width="400">
