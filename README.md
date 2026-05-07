@@ -68,13 +68,12 @@ For example for cycleways: if the point is red (=1) the segment actually is a cy
 
 > **Cycleways:** This is a counterintuitive finding. From the SHAP plot it becomes visible that highway_cycleway increases the risk the model is predicting. I would have expected the dedicated cycling infrastructure to push the predicted risk towards lower values. BRON records the number of accidents, but not the number of cyclists per road segment. So the reason for this finding could be, that a very large amount of cyclists are driving on the cycleways. More cyclists means more accidents occur and are recorded. Thus, infrastructure explicitly designed for bikes appears to be risky for the model as many accidents happen, but the large number of accidents is just a consequence of the huge cyclist amount.
 
-> **Speed:** Maxspeed is the second strongest signal, which makes sense as a higher speed limit causes more frequent and severe accidents. The SHAP summary shows that lower speed pushes the risk towards lower values. The violet color stands for a moderate speed which does not influence the model as much. What stands out is, that a higher speed limit does not necessarily increase the predicted risk, but also does not reduce it. The reason for this could be that roads with higher speed limits also have safer road infrastructure, which is keeps the risk from increasing above average.
+> **Speed:** Maxspeed is the second strongest signal, which makes sense as a speed limit has a direct influence on traffic and thus is directly correlated to accidents. The SHAP summary shows that lower speed pushes the risk towards lower values. This follows from the fact that lower speed limits typically correspond to more controlled environments or urban areas where traffic flow is regulated, lowering the risk of high-impact accidents. The violet color stands for a moderate speed which leads to an average predicted risk. What stands out is, that a higher speed limit sometimes increases the predicted risk, but also sometimes reduces it. The reason for this could be that roads with higher speed limits are more dangerous because of the velocity, but on the other hand might have safer road infrastructure and separate bike lanes, which pushes the risk below average.
 
-> **Lanes:** More lanes on a road segment generally indicate busier and wider roads. The SHAP plot shows, that more lanes push toward lower risk. This seems unexpected at first, as busier roads could be more chaotic and thus lead to a higher risk. But it actually makes sense because this danger is prevented by wider roads often having better cycling infrastructure or clearer lane separation.
+> **Lanes:** More lanes on a road segment generally indicate busier and wider roads. The SHAP plot shows, that less lanes push toward lower risk, while more lanes increase the predicted risk. The reason for this could be that busier roads with many lanes are more chaotic and thus lead to a higher risk.
 
-> **Service roads:** The feature importance plot shows that service roads (access roads, parking aisles, driveways, and back-of-building roads) have the highest impact on the model's decision. I would have assumed the maxspeed to be more impactful. From the SHAP plot it becomes visible that service roads reduce the predicted risk for accidents to happen. The reason for this might be, that they are low-speed roads where cyclists and (possibly turning) cars drive attentively and carefully.
+> **Service roads:** The feature importance plot shows that service roads (access roads, parking aisles, driveways, and back-of-building roads) have the highest impact on the model's decision. I would have assumed the maxspeed to be more impactful as it is directly influencing the traffic behaviour. From the SHAP plot it becomes visible that service roads reduce the predicted risk for accidents to happen. The reason for this might be, that they are low-speed roads where cyclists and (possibly turning) cars drive attentively and carefully.
 
-> **Roundabout:** In the SHAP plot junction_roundabout has one red point at -0.45. This shows that roundabouts reduce the predicted risk by a lot. This makes sense because dutch roundabouts separate cyclists from cars which leads to less accidents.
 
 <br>
 
@@ -144,6 +143,23 @@ The threshold determines at which predicted probability the model flags a road s
 
 <br>
 
+| **Model** | **F1-Score** | **Precision** | **Recall** |
+| :--- | :---: | :---: | :---: |
+| **Logistic Regression** | 0.024 | 0.012 | 0.547 |
+| **Random Forest** | 0.026 | 0.013 | 0.535 |
+
+
+| **Threshold** | **F1-Score** | **Precision** | **Recall** |
+| :--- | :---: | :---: | :---: |
+| **0.3** | 0.020 | 0.010 | 0.977 |
+| **0.4** | 0.020 | 0.010 | 0.895 |
+| **0.5** | 0.028 | 0.014 | 0.570 |
+| **0.6** | 0.028 | 0.014 | 0.558 |
+| **0.7** | 0.020 | 0.018 | 0.023 |
+| **0.8** | 0.000 | 0.000 | 0.000 |
+
+
+
 <p align="center">
   <img src="plots/threshold_sweep_on_validation_set.png" alt="Threshold Sweep On The Validation Set" width="400">
 </p>
@@ -156,9 +172,9 @@ The threshold determines at which predicted probability the model flags a road s
 As seen in the table, the F1 Score is highest for the threshols 0.5 or 0.6 (0.5 is the default value). No other threshold meaningfully improves the performance of my model, which confirms that the issue is missing features rather than a tuning problem.
 
 <br>
+<br>
 
 I also tried to compare a more complex Random Forest Model to a Logistic Regression baseline, but both models perform similarly as the limiting factor is the data, not the model complexity. 
-
 
 
 ## Limitations & Future Improvements
@@ -178,7 +194,7 @@ To ensure transparency, I included a short section about the limitations of my m
 
 ![CycloSafe Dashboard Model Insights 3](app/assets/cyclosafe_dashboard_model_insights_3.png)
 <div align="center">
-  <em>Figure 7: Limitations in the "Model Insights" tab of the dashboard.</em>
+  <em>Figure 7: Limitations In "Model Insights" Of The Dashboard.</em>
 </div>
 
 
