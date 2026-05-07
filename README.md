@@ -7,7 +7,7 @@ CycloSafe predicts accident hotspots for cyclists on road segments in Delft (Net
 
 ## What I Built
 
-I developed an end-to-end ML pipeline to analyse the risk of bike accidents in Delft. Joining the BRON accidents dataset (2022-2024) with OpenStreetMap road infrastructure data (retrieved via OSMnx), the model predicts the risk of a bike accident happening on a specific road segment. I compared a Logistic Regression baseline with a Random Forest classifier to evaluate performance and analysed how different road infrastructure features correlate with the number of accidents happening. The final results are shown in an interactive Streamlit dashboard with a Pydeck risk map to help visualise high-danger zones and accident locations.
+I developed an end-to-end ML pipeline to analyse the risk of bike accidents in Delft. Joining the BRON accidents dataset (2022-2024) with OpenStreetMap road infrastructure data (retrieved via OSMnx) with a spatial join (GeoPandas), the model predicts the risk of a bike accident happening on a specific road segment in Delft. I compared a Logistic Regression baseline with a Random Forest classifier to evaluate performance and analysed how different road infrastructure features correlate with the number of accidents happening. The final results are shown in an interactive Streamlit dashboard with a Pydeck risk map to help visualise high-danger zones and accident locations.
 
 ### Dashboard Preview
 
@@ -68,11 +68,11 @@ For example for cycleways: if the point is red (=1) the segment actually is a cy
 
 > **Cycleways:** This is a counterintuitive finding. From the SHAP plot it becomes visible that highway_cycleway increases the risk the model is predicting. I would have expected the dedicated cycling infrastructure to push the predicted risk towards lower values. BRON records the number of accidents, but not the number of cyclists per road segment. So the reason for this finding could be, that a very large amount of cyclists are driving on the cycleways. More cyclists means more accidents occur and are recorded. Thus, infrastructure explicitly designed for bikes appears to be risky for the model as many accidents happen, but the large number of accidents is just a consequence of the huge cyclist amount.
 
-> **Speed:** Maxspeed is the second strongest signal, which makes sense as a speed limit has a direct influence on traffic and thus is directly correlated to accidents. The SHAP summary shows that lower speed pushes the risk towards lower values. This follows from the fact that lower speed limits typically correspond to more controlled environments or urban areas where traffic flow is regulated, lowering the risk of high-impact accidents. The violet color stands for a moderate speed which leads to an average predicted risk. What stands out is, that a higher speed limit sometimes increases the predicted risk, but also sometimes reduces it. The reason for this could be that roads with higher speed limits are more dangerous because of the velocity, but on the other hand might have safer road infrastructure and separate bike lanes, which pushes the risk below average.
+> **Speed:** Maxspeed is the second strongest signal, which makes sense as a speed limit has a direct influence on traffic and thus is directly correlated with accidents. The SHAP summary shows that a lower speed generally pushes the risk towards lower values. This follows from the fact that lower speed limits typically correspond to more controlled environments or urban areas where traffic flow is regulated, lowering the risk of high-impact accidents. The violet color stands for a moderate speed which leads to an average predicted risk. What stands out is, that a higher speed limit sometimes increases the predicted risk, but also sometimes reduces it. The reason for this could be, that roads with higher speed limits are more dangerous because of the velocity, but on the other hand might have safer road infrastructure and separate bike lanes, which pushes the risk below average.
 
-> **Lanes:** More lanes on a road segment generally indicate busier and wider roads. The SHAP plot shows, that less lanes push toward lower risk, while more lanes increase the predicted risk. The reason for this could be that busier roads with many lanes are more chaotic and thus lead to a higher risk.
+> **Lanes:** More lanes on a road segment generally indicate busier and wider roads. The SHAP plot shows, that less lanes push toward lower risk, while more lanes increase the predicted risk. This is a consquence from the fact that busier roads with many lanes are more chaotic and thus lead to a higher risk.
 
-> **Service roads:** The feature importance plot shows that service roads (access roads, parking aisles, driveways, and back-of-building roads) have the highest impact on the model's decision. I would have assumed the maxspeed to be more impactful as it is directly influencing the traffic behaviour. From the SHAP plot it becomes visible that service roads reduce the predicted risk for accidents to happen. The reason for this might be, that they are low-speed roads where cyclists and (possibly turning) cars drive attentively and carefully.
+> **Service roads:** The feature importance plot shows that service roads (access roads, parking aisles, driveways, and back-of-building roads) have the highest impact on the model's decision. I would have assumed the maxspeed to be more impactful as it is directly influencing the traffic behaviour. From the SHAP plot it becomes visible that service roads reduce the predicted risk for accidents to happen. The reason for this might be, that they are low-speed roads where cyclists and cars drive attentively and carefully.
 
 
 <br>
@@ -109,7 +109,8 @@ To evaluate the model, I calculated the achieved F1 Score, precision and recall.
 - Recall: of all the segments that were actually high-risk, how many were found by the model?
 - F1 Score: mean of precision and recall, summarising how well a classifier performs on an imbalanced dataset
 
-I did not just use and show the accuracy of the model, because the dataset has 858 high risk segments out of 116625. A model that classifies every segment as low-risk would get a very high accuracy (over 99%), but would in reality be completely useless. 
+I did not just use and show the accuracy of the model, because the dataset has 858 high risk segments out of 116625. A model that classifies every segment as low-risk would get a very high accuracy (over 99%), but would in reality be completely useless. The F1 score avoids this problem by rewarding the correct identification of the rare positives and penalizing the model for incorrectly labeling majority cases as high-risk.
+
 
 <p align="center">
   <img src="plots/f1_precision_recall.png" alt="F1 Score, Precision and Recall" width="400">
@@ -127,15 +128,17 @@ The F1 Score of both models is very low. This indicates that the models are not 
 
 As seen in the feature importance and SHAP plot, the model assigns a risk score based on different attributes of the road segments such as road features and maxspeed. These current features (for example the road type) are weak proxies for the actual risk. 
 
-For example, two roads of the same type can have different cycling traffic: one could be a quiet road behind a supermarket and another one could be on a busy lane, used by hundreds of cyclists daily. For the model they would look almost identical, which makes it hard to predict different risks for the two roads.
+For example, two roads of the same type can have different cycling traffic: one could be a quiet road behind a supermarket and another one could be on a busy lane, used by hundreds of cyclists daily. As they have the same type, they would look almost identical for the model, which makes it hard to predict different risks for the two roads.
 
 To fix this, I searched for another dataset that captures the amount of cyclists on the roads of Delft. Adding data on the amount of cyclists per road segment could help the problem as the model could learn to distinguish simply busy roads from actually dangerous roads.
+ 
 
-However, the dataset I found (NDW FietsData) only contained data for max. 14 locations in Delft for the year 2024 (for previous years I found even less data points on the website). This is not enough as most roads would get the median fallback value. This makes the feature not useful enough for training, which is why I didn't include it in the final pipeline of the model.
+
+However, the best dataset I found ([NDW FietsData](https://dexter.ndw.nu/opendata/bicycle)) only contained data for max. 14 locations in Delft for the year 2024 after the download (for previous years I found even less data points on the website). This is not enough as most roads would get the median fallback value. This makes the feature not useful enough for training, which is why I didn't include it in the final pipeline of the model.
 
 <br>
 
-Additionally, only 858 segments out of 116625 are actually high-risk segments which leads to a severe class imbalance. As an attempt to solve this problem, I introduced a class=balanced parameter to the models and undersampled the majority class before training. For the training, I took 15000 randomly sampled negatives and all positives instead of the full dataset. While this helped improving performance, it did not solve the problem completely which is why the model still has a low F1 score.
+Additionally, only 858 segments out of 116625 are actually high-risk segments which leads to a severe class imbalance. As an attempt to solve this problem, I introduced a "class=balanced" parameter to the models and undersampled the majority class before training. For the training, I took 15000 randomly sampled negatives and all positives instead of the full dataset. While this helped improving performance, it did not solve the problem completely which is why the model still has a low F1 score.
 
 <br>
 
@@ -157,7 +160,7 @@ As seen in the table, the F1 Score is highest for the threshols 0.5 or 0.6 (0.5 
 <br>
 <br>
 
-I also tried to compare a more complex Random Forest Model to a Logistic Regression baseline, but both models perform similarly as the limiting factor is the data, not the model complexity. 
+I also tried to compare a more complex Random Forest Model to a Logistic Regression baseline, but both models perform similarly (see Table 1) as the limiting factor is the data, not the model complexity. 
 
 
 ## Limitations & Future Improvements
@@ -172,6 +175,7 @@ This project works with real open data which comes with real constraints. Here i
 
 >**Spatial limitation:** OSMnx pulled a slightly larger area than the Delft city limits. This leads to segments near the boundary maybe having incomplete accident records.
 
+<br>
 
 To ensure transparency, I included a short section about the limitations of my model in the model insights.
 
@@ -195,7 +199,7 @@ Some ideas and next steps for improving the model:
 ## Tech Stack 
 I built this project using a Python-based geospatial and ML stack:
 - Data Processing: Pandas, OSMnx and GeoPandas for handling the road network graphs and spatial data
-- Machine Learning: scikit-learn for the Random Forest classifier and Logistic Regression baseline, SHAP for interpreting feature importance
+- Machine Learning: scikit-learn for the Random Forest classifier and Logistic Regression baseline, SHAP for interpreting feature impact 
 - Visualisation: Matplotlib for creating the plots, Streamlit for the interactive dashboard and Pydeck for high-performance spatial mapping
 
 ## Setup:
@@ -233,9 +237,10 @@ streamlit run app/app.py
 ## Sources
 
 - Logo: CycloSafe bike logo drawn by me
-- Accident data: Sourced from the BRON database via ([data.overheid.nl](https://data.overheid.nl/))
+- Accident data: Sourced from the BRON database via [data.overheid.nl](https://data.overheid.nl/)
     - Dataset version: The specific dataset used is the ongevallen_2022_2024 GeoJSON dataset.
-- Road network: Sourced from ([OpenStreetMap](https://www.openstreetmap.org/))
+- Road network: Sourced from [OpenStreetMap](https://www.openstreetmap.org/)
     - Implementation: The road network data was pulled using the osmnx Python library for the regions Delft, Rijswijk, Pijnacker-Nootdorp, Midden-Delfland, Den Haag, and Westland.  
-
+- Cyclist Volume Data: [NDW FietsData](https://dexter.ndw.nu/opendata/bicycle)
+    - Only used in data_exploration.ipynb to test whether it could help to improve the F1 score, not integrated in final pipeline
 
