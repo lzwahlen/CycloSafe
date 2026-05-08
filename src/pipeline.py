@@ -78,3 +78,4 @@ output.to_csv("../data/road_segments.csv", index=False)
 import osmnx as ox
 delft_boundary = ox.geocode_to_gdf("Delft, Netherlands")
 delft_boundary.to_file("../data/delft_boundary.geojson", driver="GeoJSON")
+

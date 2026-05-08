@@ -61,3 +61,4 @@ print(f"{rf_evals['name']:<25} {rf_evals['f1']:<10.3f} {rf_evals['precision']:<1
 #plot feature importance 
 plot_feature_importance(rf, X_train_bal.columns.tolist())
 #plot_feature_importance(rf, X_train.columns.tolist())
+
