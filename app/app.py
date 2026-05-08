@@ -403,3 +403,4 @@ with tab2:
 #- Grey — low predicted risk (score < 0.3)
 #- Blue — road segment with at least one recorded accident
 #""")
+
