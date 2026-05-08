@@ -324,7 +324,7 @@ with tab2:
     col1, col2 = st.columns([3, 2])
 
     with col1:
-        st.image("plots/feature_importance.png", caption="Feature Importance Plot", width= 600)
+        st.image("plots/feature_importance.png", caption="Feature Importance Plot", width= 600 )
 
     with col2:
         st.markdown("""
@@ -347,7 +347,7 @@ with tab2:
     col1, col2 = st.columns([3, 2])
 
     with col1:
-        st.image("plots/shap_summary.png", caption="SHAP Plot", width= 600)
+        st.image("plots/shap_summary.png", caption="SHAP Plot", width= 600 )
 
     with col2:
         st.markdown("""
@@ -363,8 +363,8 @@ with tab2:
         st.markdown("""
         **Key Findings:**
         - Cycleways increase the predicted risk.
-        - Roundabouts and service roads push the predicted risk towards lower values
-        - A lower maximum speed decreases the predicted risk.
+        - Less lanes and service roads push the predicted risk towards lower values
+        - A higher maximum speed can increase or decrease the predicted risk.
                 
         """)
 

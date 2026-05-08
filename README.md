@@ -179,7 +179,7 @@ This project works with real open data which comes with real constraints. Here i
 
 To ensure transparency, I included a short section about the limitations of my model in the model insights.
 
-![CycloSafe Dashboard Model Insights 3](app/assets/cyclosafe_dashboard_model_insights_3.png)
+![CycloSafe Dashboard Model Insights 3](app/assets/cyclosafe_dashboard_model_insights_3.png) 
 <div align="center">
   <em>Figure 7: Limitations In "Model Insights" Of The Dashboard.</em>
 </div>
