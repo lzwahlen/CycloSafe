@@ -9,18 +9,23 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score
 
 
+#load the data 
+
 #load models from disk (s.t. no retraining needed)
 lr = joblib.load("../models/logistic_regression.pkl")
 rf = joblib.load("../models/random_forest.pkl")
 
 X, y = load_data()
+
 #recreate data split: 80/10/10 train/validation/test 
 X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, stratify=y_temp, random_state=42)
 
 
-#use SHAP explainer for Random Forest
-#for each segment and each feature their SHAP value = contribution of that feature to pushing the prediction away from the average prediction
+#evaluate the results with SHAP
+
+#use SHAP values to evaluate the Random Forest model and how its features influenced the predicted risk
+#for each segment and each feature their SHAP value reoresents the contribution of that feature to pushing the prediction away from the average prediction
 #(negative SHAP value means feature pushed prediction toward low risk)
 explainer = shap.TreeExplainer(rf)
 
@@ -28,11 +33,12 @@ explainer = shap.TreeExplainer(rf)
 X_test_sample = X_test.sample(n=200, random_state=42)
 shap_values = explainer.shap_values(X_test_sample)
 
-#shape of shap vals
+#sanity check (shape of shap vals):
 #print(type(shap_values))
 #print(np.array(shap_values).shape)
-
 #shap_values is a list of two arrays [class_0, class_1] (class 1 = high risk class)
+
+#ensure correct shape
 shap_values_class1 = shap_values[:, :, 1]
 
 #plot SHAP values
@@ -44,16 +50,17 @@ plt.tight_layout()
 plt.savefig("../plots/shap_summary.png", dpi=150, bbox_inches="tight")
 plt.close()
 
-road_segments_full = pd.read_csv("../data/road_segments.csv")
 
-#(for more honest f1 score by testing on unseen geographic areas of Delft instead of random segments)
+#evaluate model with spatial cross validation for a more reliable f1 score by testing on unseen geographic areas of Delft instead of random segments
+
 #data from the same neighbourhood is similar, in 80/20 train/test split data of same neighborhood end up in 
 #train and test data which makes the model already have seen train data very similar to the test data
-#sol: spatial crossvalidation (-> explicit geographical separation)
+#solution: spatial crossvalidation (explicit geographical separation)
 
-#spatial cross validation:
 
-#load raw csv data (including lat and lon) and reset indices
+#load and split the data 
+
+#load raw csv data (including lat and lon) 
 road_segments_full = pd.read_csv("../data/road_segments.csv")
 #reset indices to ensure allignment
 road_segments_full = road_segments_full.reset_index(drop=True)
@@ -64,6 +71,7 @@ y_reset = y.reset_index(drop=True)
 LAT_MID = 52.012
 LON_MID = 4.357
 
+#helper function to split the data into quadrants
 def get_quadrant(lat, lon):
     if lat >= LAT_MID and lon >= LON_MID:
         return 0  #north east
@@ -74,19 +82,22 @@ def get_quadrant(lat, lon):
     else:
         return 3  #south west
 
-#assign quadrant to every road segment
+#assign a quadrant to every road segment
 road_segments_full["quadrant"] = road_segments_full.apply(
     lambda row: get_quadrant(row["lat"], row["lon"]), axis=1
 )
 
-#safety check, ensure good quadrant distribution
+#safety check (ensure good quadrant distribution):
 #print(road_segments_full["quadrant"].value_counts().sort_index())
 #print(road_segments_full.groupby("quadrant")["high_risk"].sum())
 
+
+#evaluate all quadrants 
+
+#gather all F1 scores
 spatial_f1_scores = []
 
-#rotation loop, four times per quadrant
-#always one quadrant in test set and other three in training set
+#rotation loop, four times per quadrant (always one quadrant in test set and other three in training set)
 for q in range(4):
     test_mask = (road_segments_full["quadrant"] == q).values
     train_mask = ~test_mask
@@ -102,17 +113,25 @@ for q in range(4):
         print(f"skip quadrant {q}, no high-risk segments")
         continue
 
-    #train each time a new model
+    #train a new model each time to avoid that old computations bias the result
     rf_spatial = RandomForestClassifier(n_estimators=200, random_state=42, class_weight="balanced")
     rf_spatial.fit(X_spatial_train, y_spatial_train)
 
-    #evaluate on test quadrant
+    #evaluate on the test quadrant
     y_pred = rf_spatial.predict(X_spatial_test)
     f1 = f1_score(y_spatial_test, y_pred, zero_division=0)
     spatial_f1_scores.append(f1)
 
+
+#calculate the evaluation results of a random split
+
+#predict the risks
 y_pred_random = rf.predict(X_test)
+#calculate the F1 score
 random_split_f1 = f1_score(y_test, y_pred_random, zero_division=0)
+
+
+#compare a random split to cross validation and output the results
 
 #output results of spatial cross validation and compare to random split
 mean_spatial_f1 = np.mean(spatial_f1_scores)
@@ -120,29 +139,27 @@ print(f"Mean spatial CV F1:  {mean_spatial_f1:.3f}")
 print(f"Random split F1:     {random_split_f1:.3f}")
 print(f"Performance drop:    {random_split_f1 - mean_spatial_f1:.3f}")
 
+
+#visualize the results
+
 #calibration plot to check if probability scores are actually meaningful
 evaluate_probabilities(rf, X_test,y_test,"Random Forest")
 evaluate_probabilities(lr, X_test,y_test,"Logistic Regression")
 
 
-#save predictions
+#save the predictions
+
 #get risk scores for all segments, not just test set (what the dashboard map will use)
 all_probs = rf.predict_proba(X)[:, 1]  # continuous risk score 0-1
 all_preds = (all_probs >= 0.5).astype(int)
 
-#(add highway for selection in dashboard)
+#add highway for the selection in the dashboard
 predictions = pd.DataFrame({ "lat": road_segments_full["lat"].values, "lon": road_segments_full["lon"].values, "predicted_risk_score": all_probs,
     "predicted_high_risk": all_preds, "highway": road_segments_full["highway"].values, "high_risk_actual": y.values, "accident_count": road_segments_full["accident_count"].values})
 
-#check if highway is in predictions.csv
+#sanity check (if highway was correctly added to predictions.csv)
 #print(predictions.columns.tolist())
 #print(sorted(predictions["highway"].dropna().unique().tolist()))
 
-
+#save the data
 predictions.to_csv("../data/predictions.csv", index=False)
-
-#sanity check
-#print(predictions.shape)
-#print(predictions.head())
-#print(f"Risk score range: {all_probs.min():.3f} to {all_probs.max():.3f}")
-#print(f"Predicted high risk: {all_preds.sum()}")

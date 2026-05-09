@@ -138,7 +138,7 @@ However, the best dataset I found ([NDW FietsData](https://dexter.ndw.nu/opendat
 
 <br>
 
-Additionally, only 858 segments out of 116625 are actually high-risk segments which leads to a severe class imbalance. As an attempt to solve this problem, I introduced a "class=balanced" parameter to the models and undersampled the majority class before training. For the training, I took 15000 randomly sampled negatives and all positives instead of the full dataset. While this helped improving performance, it did not solve the problem completely which is why the model still has a low F1 score.
+Additionally, only 858 segments out of 116625 are actually high-risk segments which leads to a severe class imbalance. As an attempt to solve this problem, I introduced a "class_weight=balanced" parameter to the models and undersampled the majority class before training. For the training, I took 15000 randomly sampled negatives and all positives instead of the full dataset. While this helped improving performance, it did not solve the problem completely which is why the model still has a low F1 score.
 
 <br>
 
